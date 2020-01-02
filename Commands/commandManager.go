@@ -2,7 +2,9 @@ package Commands
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/greatgodapollo/Vi/Configuration"
 	"github.com/greatgodapollo/Vi/Shared"
+	"github.com/greatgodapollo/Vi/Status"
 	"strings"
 )
 
@@ -115,14 +117,15 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 		member, _ := s.State.Member(m.GuildID, m.Author.ID)
 
 		ctx := CommandContext{
-			Session: s,
-			Event:   m,
-			Manager: cmdm,
-			Message: m.Message,
-			User:    m.Author,
-			Channel: channel,
-			Guild:   guild,
-			Member:  member,
+			Session:       s,
+			Event:         m,
+			Manager:       cmdm,
+			StatusManager: cmdm.StatusManager,
+			Message:       m.Message,
+			User:          m.Author,
+			Channel:       channel,
+			Guild:         guild,
+			Member:        member,
 		}
 
 		_ = command.Run(ctx, cmd[1:])
@@ -177,18 +180,20 @@ func (cmdm *CommandManager) IsOwner(id string) bool {
 	return false
 }
 
-func NewCommandManager(prefixes, owners []string, ignoreBots bool) CommandManager {
+func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, ignoreBots bool) CommandManager {
 	return CommandManager{
-		Prefixes:   prefixes,
-		Owners:     owners,
-		Commands:   make(map[string]*Command),
-		IgnoreBots: ignoreBots,
+		Prefixes:      c.Bot.Prefixes,
+		Owners:        c.Bot.Owners,
+		StatusManager: sm,
+		Commands:      make(map[string]*Command),
+		IgnoreBots:    ignoreBots,
 	}
 }
 
 type CommandManager struct {
-	Prefixes   []string
-	Owners     []string
-	Commands   map[string]*Command
-	IgnoreBots bool
+	Prefixes      []string
+	Owners        []string
+	StatusManager *Status.StatusManager
+	Commands      map[string]*Command
+	IgnoreBots    bool
 }

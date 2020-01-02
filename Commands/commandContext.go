@@ -2,18 +2,20 @@ package Commands
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/greatgodapollo/Vi/Status"
 	"io"
 )
 
 type CommandContext struct {
-	Session *discordgo.Session
-	Event   *discordgo.MessageCreate
-	Manager *CommandManager
-	Message *discordgo.Message
-	User    *discordgo.User
-	Channel *discordgo.Channel
-	Guild   *discordgo.Guild
-	Member  *discordgo.Member
+	Session       *discordgo.Session
+	Event         *discordgo.MessageCreate
+	Manager       *CommandManager
+	StatusManager *Status.StatusManager
+	Message       *discordgo.Message
+	User          *discordgo.User
+	Channel       *discordgo.Channel
+	Guild         *discordgo.Guild
+	Member        *discordgo.Member
 }
 
 func (ctx *CommandContext) Reply(message string) (*discordgo.Message, error) {

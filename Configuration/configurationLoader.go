@@ -8,9 +8,11 @@ import (
 
 type Configuration struct {
 	Bot struct {
-		Token    string   `json:"token"`
-		Prefixes []string `json:"prefixes"`
-		Owners   []string `json:"owners"`
+		Token          string   `json:"token"`
+		Prefixes       []string `json:"prefixes"`
+		Owners         []string `json:"owners"`
+		Statuses       []string `json:"statuses"`
+		StatusInterval string   `json:"statusInterval"`
 	} `json:"bot"`
 }
 

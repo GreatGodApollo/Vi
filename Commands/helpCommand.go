@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/greatgodapollo/Vi/Shared"
+	"sort"
 	"strings"
 )
 
@@ -22,8 +23,17 @@ func NewHelpCommand() *Command {
 
 func HelpCommand(ctx CommandContext, args []string) error {
 
+	m := ctx.Manager.Commands
+
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
 	var list string
-	for _, cmd := range ctx.Manager.Commands {
+	for _, k := range keys {
+		cmd := m[k]
 		if !cmd.Hidden {
 			list += fmt.Sprintf("**%s** - `%s`\n", cmd.Name, cmd.Description)
 		}
