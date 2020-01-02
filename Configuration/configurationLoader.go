@@ -14,6 +14,9 @@ type Configuration struct {
 		Statuses       []string `json:"statuses"`
 		StatusInterval string   `json:"statusInterval"`
 	} `json:"bot"`
+	Miscellaneous struct {
+		ColorEnabled bool `json:"colorEnabled"`
+	} `json:"miscellaneous"`
 }
 
 func LoadConfiguration(file string) Configuration {

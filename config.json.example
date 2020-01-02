@@ -11,5 +11,8 @@
             ""
         ],
         "statusInterval": ""
+    },
+    "miscellaneous": {
+        "colorEnabled": true
     }
 }

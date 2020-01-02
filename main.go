@@ -17,20 +17,26 @@ import (
 var Config Configuration.Configuration
 var log = logrus.New()
 
-func init() {
-	log.SetFormatter(&prefixed.TextFormatter{
-		ForceColors:     true,
-		ForceFormatting: true,
-		FullTimestamp:   true,
-		TimestampFormat: time.RFC822Z,
-	})
-	log.Level = logrus.DebugLevel
-}
-
 func main() {
 
 	// Load in configuration file
 	Config = Configuration.LoadConfiguration("config.json")
+
+	// Create Logger
+	if Config.Miscellaneous.ColorEnabled {
+		log.SetFormatter(&prefixed.TextFormatter{
+			ForceColors:     true,
+			FullTimestamp:   true,
+			TimestampFormat: time.RFC822Z,
+		})
+	} else {
+		log.SetFormatter(&prefixed.TextFormatter{
+			ForceColors:     false,
+			FullTimestamp:   true,
+			TimestampFormat: time.RFC822Z,
+		})
+	}
+	log.Level = logrus.DebugLevel
 
 	// Create discordgo client
 	client, err := discordgo.New("Bot " + Config.Bot.Token)
