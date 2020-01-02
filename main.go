@@ -6,12 +6,26 @@ import (
 	"github.com/greatgodapollo/Vi/Commands"
 	"github.com/greatgodapollo/Vi/Configuration"
 	"github.com/greatgodapollo/Vi/Status"
+	"github.com/sirupsen/logrus"
+	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 var Config Configuration.Configuration
+var log = logrus.New()
+
+func init() {
+	log.SetFormatter(&prefixed.TextFormatter{
+		ForceColors:     true,
+		ForceFormatting: true,
+		FullTimestamp:   true,
+		TimestampFormat: time.RFC822Z,
+	})
+	log.Level = logrus.DebugLevel
+}
 
 func main() {
 
@@ -27,12 +41,13 @@ func main() {
 
 	// Create the CommandManager
 	sm := Status.NewStatusManager(Config)
-	cmdm := Commands.NewCommandManager(Config, sm, true)
+	cmdm := Commands.NewCommandManager(Config, sm, log, true)
 
 	// Add the commands
-	cmdm.AddCommand(Commands.NewHelpCommand())
-	cmdm.AddCommand(Commands.NewPingCommand())
 	cmdm.AddCommand(Commands.NewAboutCommand())
+	cmdm.AddCommand(Commands.NewHelpCommand())
+	cmdm.AddCommand(Commands.NewOwnerCommand())
+	cmdm.AddCommand(Commands.NewPingCommand())
 
 	// Add the command handler
 	client.AddHandler(cmdm.CommandHandler)
@@ -46,8 +61,10 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	cmdm.AddPrefix("<@!" + client.State.User.ID + "> ")
+	cmdm.AddPrefix("<@!" + client.State.User.ID + ">")
 
-	fmt.Println("Bot now running. CTRL-C to exit.")
+	log.Info("Bot now running. CTRL-C to exit.")
 
 	// Wait until a term signal is received
 	sc := make(chan os.Signal, 1)
@@ -56,4 +73,8 @@ func main() {
 
 	// Cleanly close after term signal
 	_ = client.Close()
+}
+
+func CommandErrorFunc(cmdm *Commands.CommandManager, err error) {
+	cmdm.Logger.Error(err)
 }

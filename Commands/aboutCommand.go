@@ -21,7 +21,7 @@ func NewAboutCommand() *Command {
 func AboutCommand(ctx CommandContext, args []string) error {
 	embed := &discordgo.MessageEmbed{
 		Title: "About Vi",
-		Color: 0,
+		Color: Shared.COLOR,
 		Footer: &discordgo.MessageEmbedFooter{
 			Text: "Created by apollo#9292",
 		},

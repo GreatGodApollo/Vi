@@ -5,11 +5,11 @@ import (
 	"github.com/greatgodapollo/Vi/Configuration"
 	"github.com/greatgodapollo/Vi/Shared"
 	"github.com/greatgodapollo/Vi/Status"
+	"github.com/sirupsen/logrus"
 	"strings"
 )
 
 func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
@@ -19,6 +19,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 
 	var prefix string
 	var contains bool
+	var err error
 	for i := 0; i < len(cmdm.Prefixes); i++ {
 		prefix = cmdm.Prefixes[i]
 		if strings.HasPrefix(m.Content, prefix) {
@@ -51,9 +52,13 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if !command.Hidden {
-				_, _ = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 			}
 
+			if err != nil {
+				cmdm.OnErrorFunc(cmdm, err)
+			}
+			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
 		}
 
@@ -67,9 +72,13 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if !command.Hidden {
-				_, _ = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 			}
 
+			if err != nil {
+				cmdm.OnErrorFunc(cmdm, err)
+			}
+			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
 		}
 
@@ -81,9 +90,13 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if !command.Hidden {
-				_, _ = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 			}
 
+			if err != nil {
+				cmdm.OnErrorFunc(cmdm, err)
+			}
+			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
 		} else if channel.Type == discordgo.ChannelTypeGuildText && command.Type == CommandTypePM {
 			embed := &discordgo.MessageEmbed{
@@ -93,9 +106,13 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if !command.Hidden {
-				_, _ = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 			}
 
+			if err != nil {
+				cmdm.OnErrorFunc(cmdm, err)
+			}
+			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
 		}
 
@@ -107,11 +124,17 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if !command.Hidden {
-				_, _ = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 			}
 
+			if err != nil {
+				cmdm.OnErrorFunc(cmdm, err)
+			}
+			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
 		}
+
+		cmdm.Logger.Debugf("P: TRUE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 
 		guild, _ := s.Guild(m.GuildID)
 		member, _ := s.State.Member(m.GuildID, m.Author.ID)
@@ -128,7 +151,10 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			Member:        member,
 		}
 
-		_ = command.Run(ctx, cmd[1:])
+		err = command.Run(ctx, cmd[1:])
+		if err != nil {
+			cmdm.OnErrorFunc(cmdm, err)
+		}
 	}
 }
 
@@ -180,11 +206,12 @@ func (cmdm *CommandManager) IsOwner(id string) bool {
 	return false
 }
 
-func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, ignoreBots bool) CommandManager {
+func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool) CommandManager {
 	return CommandManager{
 		Prefixes:      c.Bot.Prefixes,
 		Owners:        c.Bot.Owners,
 		StatusManager: sm,
+		Logger:        l,
 		Commands:      make(map[string]*Command),
 		IgnoreBots:    ignoreBots,
 	}
@@ -194,6 +221,10 @@ type CommandManager struct {
 	Prefixes      []string
 	Owners        []string
 	StatusManager *Status.StatusManager
+	Logger        *logrus.Logger
 	Commands      map[string]*Command
 	IgnoreBots    bool
+	OnErrorFunc   CommandManagerOnErrorFunc
 }
+
+type CommandManagerOnErrorFunc func(cmdm *CommandManager, err error)

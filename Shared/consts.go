@@ -3,6 +3,8 @@ package Shared
 type Permission int
 
 const (
+	COLOR int = 0x532c60
+
 	PermissionAdministrator       Permission = 8
 	PermissionViewAuditLog        Permission = 128
 	PermissionViewServerInsights  Permission = 524288

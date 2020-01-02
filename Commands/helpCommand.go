@@ -50,6 +50,7 @@ func HelpCommand(ctx CommandContext, args []string) error {
 	embed := &discordgo.MessageEmbed{
 		Title:       "Commands:",
 		Description: list,
+		Color:       Shared.COLOR,
 		Footer: &discordgo.MessageEmbedFooter{
 			Text: footer.String(),
 		},
