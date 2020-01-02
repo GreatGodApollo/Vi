@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/greatgodapollo/Vi/Commands"
 	"github.com/greatgodapollo/Vi/Configuration"
+	"github.com/greatgodapollo/Vi/Events"
 	"os"
 	"os/signal"
 	"syscall"
@@ -26,6 +27,7 @@ func main() {
 
 	// Create the CommandManager
 	cmdm := Commands.NewCommandManager(Config.Bot.Prefixes, Config.Bot.Owners, true)
+	eventm := Events.NewEventManager(Config)
 
 	// Add the commands
 	cmdm.AddCommand(Commands.NewHelpCommand())
@@ -33,6 +35,9 @@ func main() {
 
 	// Add the command handler
 	client.AddHandler(cmdm.CommandHandler)
+
+	// Add other handlers
+	client.AddHandler(eventm.OnGuildCreate)
 
 	// Connect to websocket and begin listening
 	err = client.Open()
