@@ -1,0 +1,5 @@
+# .idea Folder
+.idea/
+
+# Local Config File
+config.json
