@@ -1,3 +1,4 @@
+//go:generate goversioninfo
 /*
  * Vi - A Discord Bot written in Go
  * Copyright (C) 2019  Brett Bender
