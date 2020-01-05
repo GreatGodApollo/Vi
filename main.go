@@ -20,18 +20,20 @@ var log = logrus.New()
 func main() {
 
 	// Load in configuration file
-	Config = Configuration.LoadConfiguration("config.json")
+	Config = Configuration.LoadConfiguration("config.json", log)
 
 	// Create Logger
 	if Config.Miscellaneous.ColorEnabled {
 		log.SetFormatter(&prefixed.TextFormatter{
 			ForceColors:     true,
+			ForceFormatting: true,
 			FullTimestamp:   true,
 			TimestampFormat: time.RFC822Z,
 		})
 	} else {
 		log.SetFormatter(&prefixed.TextFormatter{
 			ForceColors:     false,
+			ForceFormatting: true,
 			FullTimestamp:   true,
 			TimestampFormat: time.RFC822Z,
 		})
@@ -46,7 +48,7 @@ func main() {
 	}
 
 	// Create the CommandManager
-	sm := Status.NewStatusManager(Config)
+	sm := Status.NewStatusManager(Config, log)
 	cmdm := Commands.NewCommandManager(Config, sm, log, true)
 
 	// Add the commands
@@ -54,6 +56,10 @@ func main() {
 	cmdm.AddCommand(Commands.NewHelpCommand())
 	cmdm.AddCommand(Commands.NewOwnerCommand())
 	cmdm.AddCommand(Commands.NewPingCommand())
+	cmdm.AddCommand(Commands.NewTagCommand())
+
+	// Load the tags file (will error if does not exist)
+	Commands.LoadTags("tags.json", log)
 
 	// Add the command handler
 	client.AddHandler(cmdm.CommandHandler)
@@ -69,8 +75,6 @@ func main() {
 	}
 	cmdm.AddPrefix("<@!" + client.State.User.ID + "> ")
 	cmdm.AddPrefix("<@!" + client.State.User.ID + ">")
-
-	log.Info("Bot now running. CTRL-C to exit.")
 
 	// Wait until a term signal is received
 	sc := make(chan os.Signal, 1)

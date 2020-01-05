@@ -3,6 +3,7 @@ package Status
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/greatgodapollo/Vi/Configuration"
+	"github.com/sirupsen/logrus"
 	"math/rand"
 	"time"
 )
@@ -10,6 +11,7 @@ import (
 type StatusManager struct {
 	Entries  []string
 	Interval string
+	log      *logrus.Logger
 }
 
 func (s *StatusManager) AddEntry(entry string) {
@@ -29,14 +31,16 @@ func (sm *StatusManager) SetStatus(s *discordgo.Session) {
 	_ = s.UpdateStatus(0, sm.Entries[i])
 }
 
-func NewStatusManager(c Configuration.Configuration) *StatusManager {
+func NewStatusManager(c Configuration.Configuration, log *logrus.Logger) *StatusManager {
 	return &StatusManager{
 		Entries:  c.Bot.Statuses,
 		Interval: c.Bot.StatusInterval,
+		log:      log,
 	}
 }
 
 func (sm *StatusManager) OnReady(s *discordgo.Session, e *discordgo.Ready) {
+	sm.log.Info("Bot is ready to receive commands!")
 	interval, err := time.ParseDuration(sm.Interval)
 	if err != nil {
 		return

@@ -36,7 +36,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 
 	channel, _ := s.Channel(m.ChannelID)
 
-	if command, exist := cmdm.Commands[cmd[0]]; exist {
+	if command, exist := cmdm.Commands[strings.ToLower(cmd[0])]; exist {
 		var inDm bool
 		if channel.Type == discordgo.ChannelTypeDM {
 			inDm = true

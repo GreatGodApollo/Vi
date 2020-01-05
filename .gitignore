@@ -3,6 +3,7 @@
 
 # Local Config File
 config.json
+tags.json
 
 # Built Executable
 Vi.exe

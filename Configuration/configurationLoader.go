@@ -2,7 +2,7 @@ package Configuration
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -19,12 +19,12 @@ type Configuration struct {
 	} `json:"miscellaneous"`
 }
 
-func LoadConfiguration(file string) Configuration {
+func LoadConfiguration(file string, log *logrus.Logger) Configuration {
 	var config Configuration
 	configFile, err := os.Open(file)
 	defer configFile.Close()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err.Error())
 	}
 	jsonParser := json.NewDecoder(configFile)
 	_ = jsonParser.Decode(&config)
