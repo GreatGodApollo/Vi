@@ -20,11 +20,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/GreatGodApollo/Vi/Commands"
+	"github.com/GreatGodApollo/Vi/Configuration"
+	"github.com/GreatGodApollo/Vi/Shared"
+	"github.com/GreatGodApollo/Vi/Status"
 	"github.com/bwmarrin/discordgo"
-	"github.com/greatgodapollo/Vi/Commands"
-	"github.com/greatgodapollo/Vi/Configuration"
-	"github.com/greatgodapollo/Vi/Shared"
-	"github.com/greatgodapollo/Vi/Status"
 	"github.com/sirupsen/logrus"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 	"os"

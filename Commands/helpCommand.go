@@ -20,8 +20,8 @@ package Commands
 
 import (
 	"fmt"
+	"github.com/GreatGodApollo/Vi/Shared"
 	"github.com/bwmarrin/discordgo"
-	"github.com/greatgodapollo/Vi/Shared"
 	"sort"
 	"strings"
 )

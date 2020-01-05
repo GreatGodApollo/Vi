@@ -19,8 +19,8 @@
 package Commands
 
 import (
+	"github.com/GreatGodApollo/Vi/Status"
 	"github.com/bwmarrin/discordgo"
-	"github.com/greatgodapollo/Vi/Status"
 	"io"
 )
 

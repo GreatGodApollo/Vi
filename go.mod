@@ -1,4 +1,4 @@
-module github.com/greatgodapollo/Vi
+module github.com/GreatGodApollo/Vi
 
 go 1.13
 

@@ -19,8 +19,8 @@
 package Status
 
 import (
+	"github.com/GreatGodApollo/Vi/Configuration"
 	"github.com/bwmarrin/discordgo"
-	"github.com/greatgodapollo/Vi/Configuration"
 	"github.com/sirupsen/logrus"
 	"math/rand"
 	"time"

@@ -18,7 +18,7 @@
 
 package Commands
 
-import "github.com/greatgodapollo/Vi/Shared"
+import "github.com/GreatGodApollo/Vi/Shared"
 
 func NewOwnerCommand() *Command {
 	return &Command{

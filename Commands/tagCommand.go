@@ -20,7 +20,7 @@ package Commands
 
 import (
 	"encoding/json"
-	"github.com/greatgodapollo/Vi/Shared"
+	"github.com/GreatGodApollo/Vi/Shared"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"

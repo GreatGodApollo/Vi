@@ -19,8 +19,8 @@
 package Commands
 
 import (
+	"github.com/GreatGodApollo/Vi/Shared"
 	"github.com/bwmarrin/discordgo"
-	"github.com/greatgodapollo/Vi/Shared"
 )
 
 func NewAboutCommand() *Command {
