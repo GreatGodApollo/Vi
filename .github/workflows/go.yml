@@ -24,13 +24,23 @@ jobs:
             dep ensure
         fi
 
-    - name: go-crossbuild
+    - name: Build Vi
       uses: izumin5210/action-go-crossbuild@v1.0.0
     
-    - name: Upload artifact
+    - name: Upload Linux
       uses: actions/upload-artifact@v1.0.0
       with:
-        # Artifact name
-        name: dist
-        # Directory containing files to upload
-        path: dist
+        name: Vi_linux_amd64
+        path: dist/Vi_linux_amd64.tar.gz
+
+    - name: Upload Darwin
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Vi_darwin_amd64
+        path: dist/Vi_darwin_amd64.zip
+        
+    - name: Upload Windows
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Vi_windows_amd64
+        path: dist/Vi_windows_amd64.zip
