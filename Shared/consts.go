@@ -22,7 +22,7 @@ type Permission int
 
 const (
 	COLOR   int    = 0x532c60
-	VERSION string = "v0.7.1"
+	VERSION string = "v0.7.2"
 
 	PermissionAdministrator       Permission = 8
 	PermissionViewAuditLog        Permission = 128

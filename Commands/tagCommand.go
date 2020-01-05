@@ -44,13 +44,18 @@ func NewTagCommand() *Command {
 }
 
 func TagCommand(ctx CommandContext, args []string) error {
-	var err error
-	if tag, has := tags[args[0]]; has {
-		_, err = ctx.Reply(tag)
+	if len(args) > 0 {
+		var err error
+		if tag, has := tags[args[0]]; has {
+			_, err = ctx.Reply(tag)
+		} else {
+			_, err = ctx.Reply("Tag does not exist")
+		}
+		return err
 	} else {
-		_, err = ctx.Reply("Tag does not exist")
+		ctx.Reply("Please supply a tag")
+		return nil
 	}
-	return err
 }
 
 func LoadTags(f string, log *logrus.Logger) {
