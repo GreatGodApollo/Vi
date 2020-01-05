@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/greatgodapollo/Vi/Commands"
 	"github.com/greatgodapollo/Vi/Configuration"
+	"github.com/greatgodapollo/Vi/Shared"
 	"github.com/greatgodapollo/Vi/Status"
 	"github.com/sirupsen/logrus"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
@@ -39,6 +40,7 @@ func main() {
 		})
 	}
 	log.Level = logrus.DebugLevel
+	log.Info(fmt.Sprintf("Starting Vi %s", Shared.VERSION))
 
 	// Create discordgo client
 	client, err := discordgo.New("Bot " + Config.Bot.Token)
