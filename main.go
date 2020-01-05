@@ -93,6 +93,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
 	cmdm.AddPrefix("<@!" + client.State.User.ID + "> ")
 	cmdm.AddPrefix("<@!" + client.State.User.ID + ">")
 
