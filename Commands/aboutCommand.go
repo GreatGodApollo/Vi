@@ -36,6 +36,11 @@ func AboutCommand(ctx CommandContext, args []string) error {
 				Value:  "https://github.com/greatgodapollo/vi",
 				Inline: true,
 			},
+			{
+				Name:   "Version",
+				Value:  Shared.VERSION,
+				Inline: true,
+			},
 		},
 	}
 
