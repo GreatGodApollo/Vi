@@ -73,28 +73,14 @@ func HelpCommand(ctx CommandContext, args []string) error {
 				}
 			}
 
-			embed := &discordgo.MessageEmbed{
-				Title: fmt.Sprintf("Help for `%s`!", args[0]),
-				Color: Shared.COLOR,
-				Fields: []*discordgo.MessageEmbedField{
-					{
-						Name:  "Description:",
-						Value: command.Description,
-					},
-					{
-						Name:   "Owner Only?",
-						Value:  ownerOnlyString,
-						Inline: true,
-					},
-					{
-						Name:   "Usage?",
-						Value:  typeString,
-						Inline: true,
-					},
-				},
-			}
+			e := Shared.NewEmbed().
+				SetTitle(fmt.Sprintf("Help for `%s`!", args[0])).
+				SetColor(Shared.COLOR).
+				SetDescription(command.Description).
+				AddInlineField("Owner Only?", ownerOnlyString).
+				AddInlineField("Usage?", typeString)
 
-			_, err := ctx.ReplyEmbed(embed)
+			_, err := ctx.ReplyEmbed(e.MessageEmbed)
 			return err
 		}
 	}

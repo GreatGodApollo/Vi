@@ -75,6 +75,7 @@ func main() {
 	// Add the commands
 	cmdm.AddCommand(Commands.NewAboutCommand())
 	cmdm.AddCommand(Commands.NewHelpCommand())
+	cmdm.AddCommand(Commands.NewInviteCommand())
 	cmdm.AddCommand(Commands.NewOwnerCommand())
 	cmdm.AddCommand(Commands.NewPingCommand())
 	cmdm.AddCommand(Commands.NewTagCommand())
@@ -91,12 +92,14 @@ func main() {
 	// Connect to websocket and begin listening
 	err = client.Open()
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return
 	}
 
 	cmdm.AddPrefix("<@!" + client.State.User.ID + "> ")
 	cmdm.AddPrefix("<@!" + client.State.User.ID + ">")
+
+	log.Info(fmt.Sprintf("Invite me at: https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=379976", client.State.User.ID))
 
 	// Wait until a term signal is received
 	sc := make(chan os.Signal, 1)

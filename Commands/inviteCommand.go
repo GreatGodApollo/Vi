@@ -19,31 +19,30 @@
 package Commands
 
 import (
+	"fmt"
 	"github.com/GreatGodApollo/Vi/Shared"
 )
 
-func NewAboutCommand() *Command {
+func NewInviteCommand() *Command {
 	return &Command{
-		Name:            "about",
-		Description:     "Get some information about the bot",
+		Name:            "invite",
+		Description:     "Invite Me!",
 		OwnerOnly:       false,
 		Hidden:          false,
 		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend + Shared.PermissionMessagesEmbedLinks,
+		BotPermissions:  Shared.PermissionMessagesSend,
 		Type:            CommandTypeEverywhere,
-		Run:             AboutCommand,
+		Run:             InviteCommand,
 	}
 }
 
-func AboutCommand(ctx CommandContext, args []string) error {
-	e := Shared.NewEmbed().
-		SetTitle("About Vi").
+func InviteCommand(ctx CommandContext, args []string) error {
+	embed := Shared.NewEmbed().
+		SetTitle("Invite Me!").
 		SetColor(Shared.COLOR).
-		SetFooter("Created by apollo#9292").
-		AddInlineField("Language", "GoLang").
-		AddInlineField("Github", "https://l.brettb.xyz/vi").
-		AddInlineField("Version", Shared.VERSION)
-
-	_, err := ctx.ReplyEmbed(e.MessageEmbed)
+		SetDescription("Vi is a multi-functional Discord bot written in GoLang using the DiscordGo library."+
+			"This bot was authored by `apollo#9292` and is available at https://l.brettb.xyz/vi").
+		AddField("Invite URL", fmt.Sprintf("https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=379976", ctx.Session.State.User.ID))
+	_, err := ctx.ReplyEmbed(embed.MessageEmbed)
 	return err
 }
