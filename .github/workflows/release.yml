@@ -4,9 +4,14 @@ on:
     name: Build
 jobs:
   release-linux-386:
-    name: release linux/386
+    name: Release Linux/386
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
     - uses: actions/checkout@master
     - name: compile and release
       uses: ngs/go-release.action@v1.0.1
@@ -15,9 +20,14 @@ jobs:
         GOARCH: "386"
         GOOS: linux
   release-linux-amd64:
-    name: release linux/amd64
+    name: Release Linux/amd64
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
     - uses: actions/checkout@master
     - name: compile and release
       uses: ngs/go-release.action@v1.0.1
@@ -26,9 +36,14 @@ jobs:
         GOARCH: amd64
         GOOS: linux
   release-darwin-386:
-    name: release darwin/386
+    name: Release Darwin/386
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
     - uses: actions/checkout@master
     - name: compile and release
       uses: ngs/go-release.action@v1.0.1
@@ -37,9 +52,14 @@ jobs:
         GOARCH: "386"
         GOOS: darwin
   release-darwin-amd64:
-    name: release darwin/amd64
+    name: Release Darwin/amd64
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
     - uses: actions/checkout@master
     - name: compile and release
       uses: ngs/go-release.action@v1.0.1
@@ -48,9 +68,14 @@ jobs:
         GOARCH: amd64
         GOOS: darwin
   release-windows-386:
-    name: release windows/386
+    name: Release Windows/386
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
     - uses: actions/checkout@master
     - name: compile and release
       uses: ngs/go-release.action@v1.0.1
@@ -59,9 +84,14 @@ jobs:
         GOARCH: "386"
         GOOS: windows
   release-windows-amd64:
-    name: release windows/amd64
+    name: Release Windows/amd64
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
     - uses: actions/checkout@master
     - name: compile and release
       uses: ngs/go-release.action@v1.0.1
