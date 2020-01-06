@@ -12,4 +12,4 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.0.0
     - name: Release Go Binaries
-      uses: dontlaugh/go-release.action@master
+      uses: lunatik13/go-release.action@master
