@@ -1,6 +1,6 @@
 on:
   release:
-    type: [published]
+    types: [published]
 name: Build
 jobs:
   release-linux-386:
