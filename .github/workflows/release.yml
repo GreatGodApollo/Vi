@@ -10,4 +10,4 @@ jobs:
 
     steps:
     - name: Release Go Binaries
-      uses: ngs/go-release.action@v1.0.2
+      uses: dontlaugh/go-release.action@master
