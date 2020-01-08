@@ -61,18 +61,22 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 		}
 
 		// Check UserPermissions
-		if command.Type != CommandTypePM && !inDm && !Shared.CheckPermissions(s, m.GuildID, m.Author.ID,
-			command.UserPermissions) {
-			embed := &discordgo.MessageEmbed{
-				Title:       "Insufficient Permissions!",
-				Description: "You don't have the required permissions to run this command!",
-				Color:       0xff0000,
-			}
+		if command.Type != CommandTypePM && !inDm && !Shared.CheckPermissions(s, m.GuildID, m.Author.ID, command.UserPermissions) {
+			if Shared.CheckPermissions(s, m.GuildID, s.State.User.ID, Shared.PermissionMessagesEmbedLinks) {
+				embed := &discordgo.MessageEmbed{
+					Title:       "Insufficient Permissions!",
+					Description: "You don't have the required permissions to run this command!",
+					Color:       0xff0000,
+				}
 
-			if !command.Hidden {
-				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				if !command.Hidden {
+					_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				}
+			} else {
+				if !command.Hidden {
+					_, err = s.ChannelMessageSend(m.ChannelID, ":x: You don't have the correct permissions to run this command! :x:")
+				}
 			}
-
 			if err != nil {
 				cmdm.OnErrorFunc(cmdm, err)
 			}
@@ -81,16 +85,21 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 		}
 
 		// Check BotPermissions
-		if command.Type != CommandTypePM && !inDm && !Shared.CheckPermissions(s, m.GuildID, s.State.User.ID,
-			command.BotPermissions) {
-			embed := &discordgo.MessageEmbed{
-				Title:       "Insufficient Permissions!",
-				Description: "I don't have the correct permissions to run this command!",
-				Color:       0xff0000,
-			}
+		if command.Type != CommandTypePM && !inDm && !Shared.CheckPermissions(s, m.GuildID, s.State.User.ID, command.BotPermissions) {
+			if Shared.CheckPermissions(s, m.GuildID, s.State.User.ID, Shared.PermissionMessagesEmbedLinks) {
+				embed := &discordgo.MessageEmbed{
+					Title:       "Insufficient Permissions!",
+					Description: "I don't have the correct permissions to run this command!",
+					Color:       0xff0000,
+				}
 
-			if !command.Hidden {
-				_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				if !command.Hidden {
+					_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+				}
+			} else {
+				if !command.Hidden {
+					_, err = s.ChannelMessageSend(m.ChannelID, ":x: I don't have the correct permissions to run this command! :x:")
+				}
 			}
 
 			if err != nil {
@@ -153,7 +162,6 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 		}
 
 		cmdm.Logger.Debugf("P: TRUE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
-
 		guild, _ := s.Guild(m.GuildID)
 		member, _ := s.State.Member(m.GuildID, m.Author.ID)
 
@@ -224,7 +232,7 @@ func (cmdm *CommandManager) IsOwner(id string) bool {
 	return false
 }
 
-func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool) CommandManager {
+func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool, errorFunc CommandManagerOnErrorFunc) CommandManager {
 	return CommandManager{
 		Prefixes:      c.Bot.Prefixes,
 		Owners:        c.Bot.Owners,
@@ -232,6 +240,7 @@ func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, 
 		Logger:        l,
 		Commands:      make(map[string]*Command),
 		IgnoreBots:    ignoreBots,
+		OnErrorFunc:   errorFunc,
 	}
 }
 

@@ -70,7 +70,7 @@ func main() {
 
 	// Create the CommandManager
 	sm := Status.NewStatusManager(Config, log)
-	cmdm := Commands.NewCommandManager(Config, sm, log, true)
+	cmdm := Commands.NewCommandManager(Config, sm, log, true, CommandErrorFunc)
 
 	// Add the commands
 	cmdm.AddCommand(Commands.NewAboutCommand())

@@ -21,7 +21,7 @@ package Shared
 import "github.com/bwmarrin/discordgo"
 
 func CheckPermissions(s *discordgo.Session, guildid, memberid string, required Permission) bool {
-	// Don't even bother checking if no permissions required
+	// No permissions, don't even bother checking this.
 	if required == 0 {
 		return true
 	}
@@ -37,17 +37,18 @@ func CheckPermissions(s *discordgo.Session, guildid, memberid string, required P
 			return false
 		}
 
-		// If they have admin they have all permissions
+		// If they have admin, return true.
 		if role.Permissions&discordgo.PermissionAdministrator != 0 {
 			return true
 		}
 
-		// If permissions and required isn't 0; return true
+		// If Permissions AND required isn't 0, return true.
 		if role.Permissions&int(required) != 0 {
 			return true
 		}
 	}
 
-	// Got nothing so false
+	// We didn't catch anything in the above loop,
+	// so we simply return false.
 	return false
 }

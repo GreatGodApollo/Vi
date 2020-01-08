@@ -30,7 +30,7 @@ func NewInviteCommand() *Command {
 		OwnerOnly:       false,
 		Hidden:          false,
 		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend,
+		BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
 		Type:            CommandTypeEverywhere,
 		Run:             InviteCommand,
 	}

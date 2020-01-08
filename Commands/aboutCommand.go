@@ -29,7 +29,7 @@ func NewAboutCommand() *Command {
 		OwnerOnly:       false,
 		Hidden:          false,
 		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend + Shared.PermissionMessagesEmbedLinks,
+		BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
 		Type:            CommandTypeEverywhere,
 		Run:             AboutCommand,
 	}
