@@ -2,13 +2,13 @@
   "FixedFileInfo": {
     "FileVersion": {
       "Major": 0,
-      "Minor": 8,
+      "Minor": 9,
       "Patch": 0,
       "Build": 0
     },
     "ProductVersion": {
       "Major": 0,
-      "Minor": 8,
+      "Minor": 9,
       "Patch": 0,
       "Build": 0
     },
@@ -21,15 +21,15 @@
   "StringFileInfo": {
     "Comments": "",
     "CompanyName": "Brett Bender",
-    "FileDescription": "A discord bot created with Go",
-    "FileVersion": "v0.8.0.0",
+    "FileDescription": "Vi: Discord Bot",
+    "FileVersion": "v0.9.0.0",
     "InternalName": "Vi",
     "LegalCopyright": "",
     "LegalTrademarks": "",
     "OriginalFilename": "Vi.exe",
     "PrivateBuild": "",
     "ProductName": "Vi",
-    "ProductVersion": "v0.8.0.0",
+    "ProductVersion": "v0.9.0.0",
     "SpecialBuild": ""
   },
   "VarFileInfo": {

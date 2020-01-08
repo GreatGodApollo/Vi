@@ -18,10 +18,11 @@
 
 package Shared
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+)
 
 func CheckPermissions(s *discordgo.Session, guildid, memberid string, required Permission) bool {
-	// No permissions, don't even bother checking this.
 	if required == 0 {
 		return true
 	}
@@ -31,24 +32,26 @@ func CheckPermissions(s *discordgo.Session, guildid, memberid string, required P
 		return false
 	}
 
+	var perms int
+
 	for _, roleID := range member.Roles {
 		role, err := s.State.Role(guildid, roleID)
 		if err != nil {
 			return false
 		}
 
-		// If they have admin, return true.
-		if role.Permissions&discordgo.PermissionAdministrator != 0 {
-			return true
+		if perms&(role.Permissions) == 0 {
+			perms = perms | role.Permissions
 		}
 
-		// If Permissions AND required isn't 0, return true.
-		if role.Permissions&int(required) != 0 {
+		if role.Permissions&int(PermissionAdministrator) != 0 {
 			return true
 		}
 	}
 
-	// We didn't catch anything in the above loop,
-	// so we simply return false.
+	if perms&int(required) == int(required) {
+		return true
+	}
+
 	return false
 }
