@@ -23,6 +23,8 @@ import (
 	"github.com/GreatGodApollo/Vi/Shared"
 )
 
+// NewInviteCommand returns a new InviteCommand for use in a CommandManager.
+// It returns a Command struct.
 func NewInviteCommand() *Command {
 	return &Command{
 		Name:            "invite",
@@ -36,6 +38,9 @@ func NewInviteCommand() *Command {
 	}
 }
 
+// InviteCommand is a CommandRunFunc.
+// It supplies the user an invite to the bot.
+// It returns an error if any occurred.
 func InviteCommand(ctx CommandContext, args []string) error {
 	embed := Shared.NewEmbed().
 		SetTitle("Invite Me!").

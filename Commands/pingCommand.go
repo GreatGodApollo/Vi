@@ -20,6 +20,8 @@ package Commands
 
 import "github.com/GreatGodApollo/Vi/Shared"
 
+// NewPingCommand returns a new PingCommand for use in a CommandManager.
+// It returns a Command struct.
 func NewPingCommand() *Command {
 	return &Command{
 		Name:            "ping",
@@ -33,6 +35,9 @@ func NewPingCommand() *Command {
 	}
 }
 
+// PingCommand is a CommandRunFunc.
+// It supplies the user a message if the bot is alive.
+// It returns an error if any occurred.
 func PingCommand(ctx CommandContext, args []string) error {
 	_, err := ctx.Reply("Pong!")
 	return err

@@ -20,6 +20,8 @@ package Commands
 
 import "github.com/GreatGodApollo/Vi/Shared"
 
+// NewOwnerCommand returns a new OwnerCommand for use in a CommandManager.
+// It returns a Command struct.
 func NewOwnerCommand() *Command {
 	return &Command{
 		Name:            "owner",
@@ -33,6 +35,9 @@ func NewOwnerCommand() *Command {
 	}
 }
 
+// OwnerCommand is a CommandRunFunc.
+// It currently has no use.
+// It returns an error if any occurred.
 func OwnerCommand(ctx CommandContext, args []string) error {
 	_, err := ctx.Reply("To be implemented!")
 	return err

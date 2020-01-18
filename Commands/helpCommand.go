@@ -26,6 +26,8 @@ import (
 	"strings"
 )
 
+// NewHelpCommand returns a new HelpCommand for use in a CommandManager.
+// It returns a Command struct.
 func NewHelpCommand() *Command {
 	return &Command{
 		Name:            "help",
@@ -39,6 +41,9 @@ func NewHelpCommand() *Command {
 	}
 }
 
+// HelpCommand is a CommandRunFunc.
+// It supplies the user a list of commands in the CommandManager it is assigned to.
+// It returns an error if any occurred.
 func HelpCommand(ctx CommandContext, args []string) error {
 
 	if len(args) > 0 {

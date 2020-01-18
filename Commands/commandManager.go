@@ -27,6 +27,8 @@ import (
 	"strings"
 )
 
+// CommandHandler works as the CommandManager's message listener.
+// It returns nothing.
 func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -184,10 +186,14 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 	}
 }
 
+// AddPrefix adds a new prefix to the CommandManager's prefix list.
+// It returns nothing.
 func (cmdm *CommandManager) AddPrefix(prefix string) {
 	cmdm.Prefixes = append(cmdm.Prefixes, prefix)
 }
 
+// RemovePrefix removes a prefix from the CommandManager's prefix list.
+// It returns nothing.
 func (cmdm *CommandManager) RemovePrefix(prefix string) {
 	for i, v := range cmdm.Prefixes {
 		if v == prefix {
@@ -197,14 +203,20 @@ func (cmdm *CommandManager) RemovePrefix(prefix string) {
 	}
 }
 
+// SetPrefixes sets the CommandManager's prefix list.
+// It returns nothing.
 func (cmdm *CommandManager) SetPrefixes(prefixes []string) {
 	cmdm.Prefixes = prefixes
 }
 
+// GetPrefixes gets the CommandManager's prefix list.
+// It returns a string array.
 func (cmdm *CommandManager) GetPrefixes() []string {
 	return cmdm.Prefixes
 }
 
+// AddNewCommand adds a new command to the CommandManager's command list.
+// It returns nothing.
 func (cmdm *CommandManager) AddNewCommand(name, desc string, owneronly, hidden bool, userperms, botperms Shared.Permission,
 	cmdType CommandType, run CommandFunc) {
 	cmdm.Commands[name] = &Command{
@@ -212,10 +224,14 @@ func (cmdm *CommandManager) AddNewCommand(name, desc string, owneronly, hidden b
 	}
 }
 
+// AddCommand adds an existent command to the CommandManager's command list.
+// It returns nothing.
 func (cmdm *CommandManager) AddCommand(cmd *Command) {
 	cmdm.Commands[cmd.Name] = cmd
 }
 
+// RemoveCommand removes a command from the CommandManager's command list.
+// It returns nothing.
 func (cmdm *CommandManager) RemoveCommand(name string) {
 	if _, has := cmdm.Commands[name]; has {
 		delete(cmdm.Commands, name)
@@ -223,6 +239,8 @@ func (cmdm *CommandManager) RemoveCommand(name string) {
 	return
 }
 
+// IsOwner checks if a user ID is is in the owner list.
+// It returns a bool.
 func (cmdm *CommandManager) IsOwner(id string) bool {
 	for _, o := range cmdm.Owners {
 		if id == o {
@@ -232,6 +250,8 @@ func (cmdm *CommandManager) IsOwner(id string) bool {
 	return false
 }
 
+// NewCommandManager instantiates a new CommandManager.
+// It returns a CommandManager.
 func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool, errorFunc CommandManagerOnErrorFunc) CommandManager {
 	return CommandManager{
 		Prefixes:      c.Bot.Prefixes,
@@ -244,14 +264,29 @@ func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, 
 	}
 }
 
+// A CommandManager represents a set of prefixes, owners and commands, with some extra utility to create a command handler.
 type CommandManager struct {
-	Prefixes      []string
-	Owners        []string
+	// The array of prefixes a CommandManager will respond to.
+	Prefixes []string
+
+	// The array of IDs that will be considered a bot owner.
+	Owners []string
+
+	// The bot's StatusManager.
 	StatusManager *Status.StatusManager
-	Logger        *logrus.Logger
-	Commands      map[string]*Command
-	IgnoreBots    bool
-	OnErrorFunc   CommandManagerOnErrorFunc
+
+	// The bot instance Logger.
+	Logger *logrus.Logger
+
+	// The map of Commands in the CommandManager.
+	Commands map[string]*Command
+
+	// If the CommandManager ignores bots or not.
+	IgnoreBots bool
+
+	// The function that will be ran when the CommandManager encounters an error.
+	OnErrorFunc CommandManagerOnErrorFunc
 }
 
+// A CommandManagerOnErrorFunc is a function that will run whenever the CommandManager encounters an error.
 type CommandManagerOnErrorFunc func(cmdm *CommandManager, err error)

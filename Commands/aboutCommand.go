@@ -22,6 +22,8 @@ import (
 	"github.com/GreatGodApollo/Vi/Shared"
 )
 
+// NewAboutCommand returns a new AboutCommand for use in a CommandManager.
+// It returns a Command struct.
 func NewAboutCommand() *Command {
 	return &Command{
 		Name:            "about",
@@ -35,6 +37,9 @@ func NewAboutCommand() *Command {
 	}
 }
 
+// AboutCommand is a CommandRunFunc.
+// It supplies the user who runs it information about the bot.
+// It returns an error if any occurred.
 func AboutCommand(ctx CommandContext, args []string) error {
 	e := Shared.NewEmbed().
 		SetTitle("About Vi").

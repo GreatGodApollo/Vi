@@ -30,6 +30,8 @@ var (
 	tags map[string]string
 )
 
+// NewTagCommand returns a new TagCommand for use in a CommandManager.
+// It returns a Command struct.
 func NewTagCommand() *Command {
 	return &Command{
 		Name:            "tag",
@@ -43,6 +45,9 @@ func NewTagCommand() *Command {
 	}
 }
 
+// TagCommand is a CommandRunFunc.
+// It supplies the user with the tag description if the tag supplied exists.
+// It returns an error if any occurred.
 func TagCommand(ctx CommandContext, args []string) error {
 	if len(args) > 0 {
 		var err error
@@ -58,6 +63,8 @@ func TagCommand(ctx CommandContext, args []string) error {
 	}
 }
 
+// LoadTags loads the tags from a given file.
+// It returns nothing.
 func LoadTags(f string, log *logrus.Logger) {
 	file, err := os.Open(f)
 	defer file.Close()
