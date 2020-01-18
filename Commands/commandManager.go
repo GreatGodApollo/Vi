@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// The Commands package both contains the CommandManager framework and the bot commands.
+// Everything is pretty modular and can be adapted to your own use cases.
 package Commands
 
 import (
