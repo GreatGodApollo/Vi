@@ -72,13 +72,8 @@ func main() {
 	sm := Status.NewStatusManager(Config, log)
 	cmdm := Commands.NewCommandManager(Config, sm, log, true, CommandErrorFunc)
 
-	// Add the commands
-	cmdm.AddCommand(Commands.NewAboutCommand())
-	cmdm.AddCommand(Commands.NewHelpCommand())
-	cmdm.AddCommand(Commands.NewInviteCommand())
-	cmdm.AddCommand(Commands.NewOwnerCommand())
-	cmdm.AddCommand(Commands.NewPingCommand())
-	cmdm.AddCommand(Commands.NewTagCommand())
+	// Register the commands
+	registerCommands(cmdm)
 
 	// Load the tags file (will error if does not exist)
 	Commands.LoadTags("tags.json", log)
@@ -112,4 +107,13 @@ func main() {
 
 func CommandErrorFunc(cmdm *Commands.CommandManager, err error) {
 	cmdm.Logger.Error(err)
+}
+
+func registerCommands(cmdm Commands.CommandManager) {
+	cmdm.AddCommand(Commands.NewAboutCommand())
+	cmdm.AddCommand(Commands.NewHelpCommand())
+	cmdm.AddCommand(Commands.NewInviteCommand())
+	cmdm.AddCommand(Commands.NewOwnerCommand())
+	cmdm.AddCommand(Commands.NewPingCommand())
+	cmdm.AddCommand(Commands.NewTagCommand())
 }
