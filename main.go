@@ -115,5 +115,7 @@ func registerCommands(cmdm Commands.CommandManager) {
 	cmdm.AddCommand(Commands.NewInviteCommand())
 	cmdm.AddCommand(Commands.NewOwnerCommand())
 	cmdm.AddCommand(Commands.NewPingCommand())
+	cmdm.AddCommand(Commands.NewSuggestCommand())
 	cmdm.AddCommand(Commands.NewTagCommand())
+	cmdm.AddCommand(Commands.NewUserInfoCommand())
 }

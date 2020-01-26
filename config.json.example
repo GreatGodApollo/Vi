@@ -13,6 +13,7 @@
         "statusInterval": ""
     },
     "miscellaneous": {
-        "colorEnabled": true
+        "colorEnabled": true,
+        "suggestions":  "channel id"
     }
 }

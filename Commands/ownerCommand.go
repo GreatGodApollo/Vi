@@ -39,6 +39,16 @@ func NewOwnerCommand() *Command {
 // It currently has no use.
 // It returns an error if any occurred.
 func OwnerCommand(ctx CommandContext, args []string) error {
+	if len(args) > 0 {
+		switch args[0] {
+		case "reloadtags":
+			{
+				LoadTags("tags.json", ctx.Manager.Logger)
+				_, err := ctx.Reply("Tags reloaded!")
+				return err
+			}
+		}
+	}
 	_, err := ctx.Reply("To be implemented!")
 	return err
 }

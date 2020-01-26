@@ -33,7 +33,8 @@ type Configuration struct {
 		StatusInterval string   `json:"statusInterval"`
 	} `json:"bot"`
 	Miscellaneous struct {
-		ColorEnabled bool `json:"colorEnabled"`
+		ColorEnabled      bool   `json:"colorEnabled"`
+		SuggestionChannel string `json:"suggestions"`
 	} `json:"miscellaneous"`
 }
 

@@ -256,6 +256,7 @@ func (cmdm *CommandManager) IsOwner(id string) bool {
 // It returns a CommandManager.
 func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool, errorFunc CommandManagerOnErrorFunc) CommandManager {
 	return CommandManager{
+		Config:        c,
 		Prefixes:      c.Bot.Prefixes,
 		Owners:        c.Bot.Owners,
 		StatusManager: sm,
@@ -268,6 +269,9 @@ func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, 
 
 // A CommandManager represents a set of prefixes, owners and commands, with some extra utility to create a command handler.
 type CommandManager struct {
+	// The bot configuration
+	Config Configuration.Configuration
+
 	// The array of prefixes a CommandManager will respond to.
 	Prefixes []string
 

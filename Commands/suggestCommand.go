@@ -19,60 +19,41 @@
 package Commands
 
 import (
-	"encoding/json"
 	"github.com/GreatGodApollo/Vi/Shared"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
-	"os"
+	"strings"
 )
 
-var (
-	tags map[string]string
-)
-
-// NewTagCommand returns a new TagCommand for use in a CommandManager.
-// It returns a Command struct.
-func NewTagCommand() *Command {
+func NewSuggestCommand() *Command {
 	return &Command{
-		Name:            "tag",
-		Description:     "Get a tag",
+		Name:            "suggest",
+		Description:     "Suggest a thing for the bot!",
 		OwnerOnly:       false,
 		Hidden:          false,
 		UserPermissions: 0,
 		BotPermissions:  Shared.PermissionMessagesSend,
 		Type:            CommandTypeEverywhere,
-		Run:             TagCommand,
+		Run:             SuggestCommand,
 	}
 }
 
-// TagCommand is a CommandRunFunc.
-// It supplies the user with the tag description if the tag supplied exists.
-// It returns an error if any occurred.
-func TagCommand(ctx CommandContext, args []string) error {
-	if len(args) > 0 {
-		var err error
-		if tag, has := tags[args[0]]; has {
-			_, err = ctx.Reply(tag)
-		} else {
-			_, err = ctx.Reply(":x: Tag does not exist :x:")
-		}
+func SuggestCommand(ctx CommandContext, args []string) error {
+	if ctx.Manager.Config.Miscellaneous.SuggestionChannel == "" {
+		_, err := ctx.Reply(":x: Suggesting is not enabled! :x:")
 		return err
-	} else {
-		ctx.Reply(":x: Please supply a tag :x:")
-		return nil
 	}
-}
-
-// LoadTags loads the tags from a given file.
-// It returns nothing.
-func LoadTags(f string, log *logrus.Logger) {
-	tags = nil
-	file, err := os.Open(f)
-	defer file.Close()
+	if len(args) <= 1 {
+		_, err := ctx.Reply(":x: You need to type something actually worth suggesting! :x:")
+		return err
+	}
+	embedBuilder := Shared.NewEmbed()
+	embedBuilder.SetColor(Shared.COLOR)
+	embedBuilder.SetAuthor("Suggestion from: "+ctx.User.Username+"#"+ctx.User.Discriminator, ctx.User.AvatarURL("1024"))
+	embedBuilder.SetDescription(strings.Join(args, " "))
+	_, err := ctx.Session.ChannelMessageSendEmbed(ctx.Manager.Config.Miscellaneous.SuggestionChannel, embedBuilder.MessageEmbed)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		return err
 	}
-	byteValues, _ := ioutil.ReadAll(file)
-	err = json.Unmarshal(byteValues, &tags)
+	_, err = ctx.Reply(":white_check_mark: Suggestion sent!")
+	return err
 }
