@@ -28,6 +28,9 @@ type Command struct {
 	// The name of the command (What it will be triggered by).
 	Name string
 
+	// Command aliases
+	Aliases []string
+
 	// The command's description.
 	Description string
 

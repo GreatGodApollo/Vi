@@ -25,6 +25,7 @@ import "github.com/GreatGodApollo/Vi/Shared"
 func NewOwnerCommand() *Command {
 	return &Command{
 		Name:            "owner",
+		Aliases:         []string{"o"},
 		Description:     "The general owner command",
 		OwnerOnly:       true,
 		Hidden:          false,

@@ -58,7 +58,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 
 	channel, _ := s.Channel(m.ChannelID)
 
-	if command, exist := cmdm.Commands[strings.ToLower(cmd[0])]; exist {
+	if command, exist, _ := cmdm.GetCommand(cmd[0]); exist {
 		var inDm bool
 		if channel.Type == discordgo.ChannelTypeDM {
 			inDm = true
@@ -219,26 +219,45 @@ func (cmdm *CommandManager) GetPrefixes() []string {
 
 // AddNewCommand adds a new command to the CommandManager's command list.
 // It returns nothing.
-func (cmdm *CommandManager) AddNewCommand(name, desc string, owneronly, hidden bool, userperms, botperms Shared.Permission,
+func (cmdm *CommandManager) AddNewCommand(name string, aliases []string, desc string, owneronly, hidden bool, userperms, botperms Shared.Permission,
 	cmdType CommandType, run CommandFunc) {
-	cmdm.Commands[name] = &Command{
-		name, desc, owneronly, hidden, userperms, botperms, cmdType, run,
+	var cmd *Command
+	if _, exists, _ := cmdm.GetCommand(name); !exists {
+		cmd = &Command{
+			name, aliases, desc, owneronly, hidden, userperms, botperms, cmdType, run,
+		}
 	}
+	cmdm.Commands = append(cmdm.Commands, cmd)
 }
 
 // AddCommand adds an existent command to the CommandManager's command list.
 // It returns nothing.
 func (cmdm *CommandManager) AddCommand(cmd *Command) {
-	cmdm.Commands[cmd.Name] = cmd
+	if _, exists, _ := cmdm.GetCommand(cmd.Name); !exists {
+		cmdm.Commands = append(cmdm.Commands, cmd)
+	}
+}
+
+func (cmdm *CommandManager) GetCommand(name string) (cmd *Command, exists bool, index int) {
+	for i, cmd := range cmdm.Commands {
+		if cmd.Name == name {
+			return cmd, true, i
+		}
+		for _, a := range cmd.Aliases {
+			if a == name {
+				return cmd, true, i
+			}
+		}
+	}
+	return nil, false, 0
 }
 
 // RemoveCommand removes a command from the CommandManager's command list.
 // It returns nothing.
 func (cmdm *CommandManager) RemoveCommand(name string) {
-	if _, has := cmdm.Commands[name]; has {
-		delete(cmdm.Commands, name)
+	if _, exists, index := cmdm.GetCommand(name); exists {
+		cmdm.Commands = RemoveCommandFromSlice(cmdm.Commands, index)
 	}
-	return
 }
 
 // IsOwner checks if a user ID is is in the owner list.
@@ -261,7 +280,7 @@ func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, 
 		Owners:        c.Bot.Owners,
 		StatusManager: sm,
 		Logger:        l,
-		Commands:      make(map[string]*Command),
+		Commands:      []*Command{},
 		IgnoreBots:    ignoreBots,
 		OnErrorFunc:   errorFunc,
 	}
@@ -285,7 +304,7 @@ type CommandManager struct {
 	Logger *logrus.Logger
 
 	// The map of Commands in the CommandManager.
-	Commands map[string]*Command
+	Commands []*Command
 
 	// If the CommandManager ignores bots or not.
 	IgnoreBots bool
@@ -296,3 +315,8 @@ type CommandManager struct {
 
 // A CommandManagerOnErrorFunc is a function that will run whenever the CommandManager encounters an error.
 type CommandManagerOnErrorFunc func(cmdm *CommandManager, err error)
+
+func RemoveCommandFromSlice(s []*Command, i int) []*Command {
+	s[len(s)-1], s[i] = s[i], s[len(s)-1]
+	return s[:len(s)-1]
+}

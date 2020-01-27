@@ -31,6 +31,7 @@ import (
 func NewHelpCommand() *Command {
 	return &Command{
 		Name:            "help",
+		Aliases:         []string{"h"},
 		Description:     "Get some help with the bot.",
 		OwnerOnly:       false,
 		Hidden:          false,
@@ -47,7 +48,7 @@ func NewHelpCommand() *Command {
 func HelpCommand(ctx CommandContext, args []string) error {
 
 	if len(args) > 0 {
-		if command, has := ctx.Manager.Commands[strings.ToLower(args[0])]; has {
+		if command, has, _ := ctx.Manager.GetCommand(strings.ToLower(args[0])); has {
 			if command.Hidden {
 				return nil
 			}
@@ -92,14 +93,15 @@ func HelpCommand(ctx CommandContext, args []string) error {
 	m := ctx.Manager.Commands
 
 	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
+	for _, k := range m {
+		n := k.Name
+		keys = append(keys, n)
 	}
 	sort.Strings(keys)
 
 	var list string
 	for _, k := range keys {
-		cmd := m[k]
+		cmd, _, _ := ctx.Manager.GetCommand(k)
 		if !cmd.Hidden {
 			list += fmt.Sprintf("**%s** - `%s`\n", cmd.Name, cmd.Description)
 		}
