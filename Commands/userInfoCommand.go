@@ -66,7 +66,7 @@ func UserInfoCommand(ctx CommandContext, args []string) error {
 		title = user.Username + "#" + user.Discriminator
 	}
 
-	if pres.Game.Name == "" {
+	if pres.Game == nil {
 		game = "nothing."
 	} else {
 		game = pres.Game.Name
