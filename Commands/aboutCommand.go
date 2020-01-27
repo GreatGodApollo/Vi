@@ -22,25 +22,21 @@ import (
 	"github.com/GreatGodApollo/Vi/Shared"
 )
 
-// NewAboutCommand returns a new AboutCommand for use in a CommandManager.
-// It returns a Command struct.
-func NewAboutCommand() *Command {
-	return &Command{
-		Name:            "about",
-		Description:     "Get some information about the bot",
-		OwnerOnly:       false,
-		Hidden:          false,
-		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
-		Type:            CommandTypeEverywhere,
-		Run:             AboutCommand,
-	}
+var AboutCommand = &Command{
+	Name:            "about",
+	Description:     "Get some information about the bot",
+	OwnerOnly:       false,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
+	Type:            CommandTypeEverywhere,
+	Run:             AboutCommandFunc,
 }
 
-// AboutCommand is a CommandRunFunc.
+// AboutCommandFunc is a CommandRunFunc.
 // It supplies the user who runs it information about the bot.
 // It returns an error if any occurred.
-func AboutCommand(ctx CommandContext, args []string) error {
+func AboutCommandFunc(ctx CommandContext, args []string) error {
 	e := Shared.NewEmbed().
 		SetTitle("About Vi").
 		SetColor(Shared.COLOR).

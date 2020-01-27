@@ -23,20 +23,21 @@ import (
 	"strings"
 )
 
-func NewSuggestCommand() *Command {
-	return &Command{
-		Name:            "suggest",
-		Description:     "Suggest a thing for the bot!",
-		OwnerOnly:       false,
-		Hidden:          false,
-		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend,
-		Type:            CommandTypeEverywhere,
-		Run:             SuggestCommand,
-	}
+var SuggestCommand = &Command{
+	Name:            "suggest",
+	Description:     "Suggest a thing for the bot!",
+	OwnerOnly:       false,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend,
+	Type:            CommandTypeEverywhere,
+	Run:             SuggestCommandFunc,
 }
 
-func SuggestCommand(ctx CommandContext, args []string) error {
+// SuggestCommandFunc is a CommandRunFunc.
+// It submits a suggestion to the channel specific in the config.
+// It returns an error if any occurred.
+func SuggestCommandFunc(ctx CommandContext, args []string) error {
 	if ctx.Manager.Config.Miscellaneous.SuggestionChannel == "" {
 		_, err := ctx.Reply(":x: Suggesting is not enabled! :x:")
 		return err

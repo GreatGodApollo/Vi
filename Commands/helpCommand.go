@@ -25,26 +25,24 @@ import (
 	"strings"
 )
 
-// NewHelpCommand returns a new HelpCommand for use in a CommandManager.
+// NewHelpCommand returns a new HelpCommandFunc for use in a CommandManager.
 // It returns a Command struct.
-func NewHelpCommand() *Command {
-	return &Command{
-		Name:            "help",
-		Aliases:         []string{"h"},
-		Description:     "Get some help with the bot.",
-		OwnerOnly:       false,
-		Hidden:          false,
-		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
-		Type:            CommandTypeEverywhere,
-		Run:             HelpCommand,
-	}
+var HelpCommand = &Command{
+	Name:            "help",
+	Aliases:         []string{"h"},
+	Description:     "Get some help with the bot.",
+	OwnerOnly:       false,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
+	Type:            CommandTypeEverywhere,
+	Run:             HelpCommandFunc,
 }
 
-// HelpCommand is a CommandRunFunc.
+// HelpCommandFunc is a CommandRunFunc.
 // It supplies the user a list of commands in the CommandManager it is assigned to.
 // It returns an error if any occurred.
-func HelpCommand(ctx CommandContext, args []string) error {
+func HelpCommandFunc(ctx CommandContext, args []string) error {
 
 	if len(args) > 0 {
 		if command, has, _ := ctx.Manager.GetCommand(strings.ToLower(args[0])); has {

@@ -30,26 +30,22 @@ var (
 	tags map[string]string
 )
 
-// NewTagCommand returns a new TagCommand for use in a CommandManager.
-// It returns a Command struct.
-func NewTagCommand() *Command {
-	return &Command{
-		Name:            "tag",
-		Aliases:         []string{"t"},
-		Description:     "Get a tag",
-		OwnerOnly:       false,
-		Hidden:          false,
-		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend,
-		Type:            CommandTypeEverywhere,
-		Run:             TagCommand,
-	}
+var TagCommand = &Command{
+	Name:            "tag",
+	Aliases:         []string{"t"},
+	Description:     "Get a tag",
+	OwnerOnly:       false,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend,
+	Type:            CommandTypeEverywhere,
+	Run:             TagCommandFunc,
 }
 
-// TagCommand is a CommandRunFunc.
+// TagCommandFunc is a CommandRunFunc.
 // It supplies the user with the tag description if the tag supplied exists.
 // It returns an error if any occurred.
-func TagCommand(ctx CommandContext, args []string) error {
+func TagCommandFunc(ctx CommandContext, args []string) error {
 	if len(args) > 0 {
 		var err error
 		if tag, has := tags[args[0]]; has {

@@ -29,26 +29,22 @@ import (
 
 var tformat = "Mon, 02 Jan 2006\n15:04:05 MST"
 
-// NewUserInfoCommand returns a new UserInfoCommand for use in a CommandManager.
-// It returns a Command struct.
-func NewUserInfoCommand() *Command {
-	return &Command{
-		Name:            "userinfo",
-		Aliases:         []string{"ui"},
-		Description:     "Returns information about a given user",
-		OwnerOnly:       false,
-		Hidden:          false,
-		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend,
-		Type:            CommandTypeEverywhere,
-		Run:             UserInfoCommand,
-	}
+var UserInfoCommand = &Command{
+	Name:            "userinfo",
+	Aliases:         []string{"ui"},
+	Description:     "Returns information about a given user",
+	OwnerOnly:       false,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend,
+	Type:            CommandTypeEverywhere,
+	Run:             UserInfoCommandFunc,
 }
 
 // UserInfoCommand is a CommandRunFunc.
 // It supplies the user information about another user.
 // It returns an error if any occurred.
-func UserInfoCommand(ctx CommandContext, args []string) error {
+func UserInfoCommandFunc(ctx CommandContext, args []string) error {
 	user, member := parseArgs(ctx, args)
 	primTs, _ := discordgo.SnowflakeTimestamp(user.ID)
 	servTs, _ := member.JoinedAt.Parse()

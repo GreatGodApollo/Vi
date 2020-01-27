@@ -110,12 +110,12 @@ func CommandErrorFunc(cmdm *Commands.CommandManager, err error) {
 }
 
 func registerCommands(cmdm Commands.CommandManager) {
-	cmdm.AddCommand(Commands.NewAboutCommand())
-	cmdm.AddCommand(Commands.NewHelpCommand())
-	cmdm.AddCommand(Commands.NewInviteCommand())
-	cmdm.AddCommand(Commands.NewOwnerCommand())
-	cmdm.AddCommand(Commands.NewPingCommand())
-	cmdm.AddCommand(Commands.NewSuggestCommand())
-	cmdm.AddCommand(Commands.NewTagCommand())
-	cmdm.AddCommand(Commands.NewUserInfoCommand())
+	cmdm.AddCommand(Commands.AboutCommand)
+	cmdm.AddCommand(Commands.HelpCommand)
+	cmdm.AddCommand(Commands.InviteCommand)
+	cmdm.AddCommand(Commands.OwnerCommand)
+	cmdm.AddCommand(Commands.PingCommand)
+	cmdm.AddCommand(Commands.SuggestCommand)
+	cmdm.AddCommand(Commands.TagCommand)
+	cmdm.AddCommand(Commands.UserInfoCommand)
 }

@@ -20,26 +20,22 @@ package Commands
 
 import "github.com/GreatGodApollo/Vi/Shared"
 
-// NewOwnerCommand returns a new OwnerCommand for use in a CommandManager.
-// It returns a Command struct.
-func NewOwnerCommand() *Command {
-	return &Command{
-		Name:            "owner",
-		Aliases:         []string{"o"},
-		Description:     "The general owner command",
-		OwnerOnly:       true,
-		Hidden:          false,
-		UserPermissions: 0,
-		BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
-		Type:            CommandTypeEverywhere,
-		Run:             OwnerCommand,
-	}
+var OwnerCommand = &Command{
+	Name:            "owner",
+	Aliases:         []string{"o"},
+	Description:     "The general owner command",
+	OwnerOnly:       true,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
+	Type:            CommandTypeEverywhere,
+	Run:             OwnerCommandFunc,
 }
 
-// OwnerCommand is a CommandRunFunc.
+// OwnerCommandFunc is a CommandRunFunc.
 // It currently has no use.
 // It returns an error if any occurred.
-func OwnerCommand(ctx CommandContext, args []string) error {
+func OwnerCommandFunc(ctx CommandContext, args []string) error {
 	if len(args) > 0 {
 		switch args[0] {
 		case "reloadtags":
