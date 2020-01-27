@@ -29,7 +29,7 @@ import (
 // It returns a Command struct.
 var HelpCommand = &Command{
 	Name:            "help",
-	Aliases:         []string{"h"},
+	Aliases:         []string{"h", "halp"},
 	Description:     "Get some help with the bot.",
 	OwnerOnly:       false,
 	Hidden:          false,
@@ -79,9 +79,9 @@ func HelpCommandFunc(ctx CommandContext, args []string) error {
 			var alList string
 			for i, a := range command.Aliases {
 				if i == len(command.Aliases)-1 {
-					alList += fmt.Sprintf("%s", a)
+					alList += fmt.Sprintf("`%s`", a)
 				} else {
-					alList += fmt.Sprintf("%s ", a)
+					alList += fmt.Sprintf("`%s` ", a)
 				}
 			}
 			if alList == "" {
