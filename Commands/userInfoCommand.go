@@ -34,6 +34,7 @@ var tformat = "Mon, 02 Jan 2006\n15:04:05 MST"
 func NewUserInfoCommand() *Command {
 	return &Command{
 		Name:            "userinfo",
+		Aliases:         []string{"ui"},
 		Description:     "Returns information about a given user",
 		OwnerOnly:       false,
 		Hidden:          false,

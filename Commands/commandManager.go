@@ -227,25 +227,25 @@ func (cmdm *CommandManager) AddNewCommand(name string, aliases []string, desc st
 			name, aliases, desc, owneronly, hidden, userperms, botperms, cmdType, run,
 		}
 	}
-	cmdm.Commands = append(cmdm.Commands, cmd)
+	*cmdm.Commands = append(*cmdm.Commands, cmd)
 }
 
 // AddCommand adds an existent command to the CommandManager's command list.
 // It returns nothing.
 func (cmdm *CommandManager) AddCommand(cmd *Command) {
 	if _, exists, _ := cmdm.GetCommand(cmd.Name); !exists {
-		cmdm.Commands = append(cmdm.Commands, cmd)
+		*cmdm.Commands = append(*cmdm.Commands, cmd)
 	}
 }
 
 func (cmdm *CommandManager) GetCommand(name string) (cmd *Command, exists bool, index int) {
-	for i, cmd := range cmdm.Commands {
-		if cmd.Name == name {
-			return cmd, true, i
+	for i, c := range *cmdm.Commands {
+		if c.Name == name {
+			return c, true, i
 		}
-		for _, a := range cmd.Aliases {
+		for _, a := range c.Aliases {
 			if a == name {
-				return cmd, true, i
+				return c, true, i
 			}
 		}
 	}
@@ -256,7 +256,7 @@ func (cmdm *CommandManager) GetCommand(name string) (cmd *Command, exists bool, 
 // It returns nothing.
 func (cmdm *CommandManager) RemoveCommand(name string) {
 	if _, exists, index := cmdm.GetCommand(name); exists {
-		cmdm.Commands = RemoveCommandFromSlice(cmdm.Commands, index)
+		*cmdm.Commands = RemoveCommandFromSlice(*cmdm.Commands, index)
 	}
 }
 
@@ -280,7 +280,7 @@ func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, 
 		Owners:        c.Bot.Owners,
 		StatusManager: sm,
 		Logger:        l,
-		Commands:      []*Command{},
+		Commands:      &[]*Command{},
 		IgnoreBots:    ignoreBots,
 		OnErrorFunc:   errorFunc,
 	}
@@ -304,7 +304,7 @@ type CommandManager struct {
 	Logger *logrus.Logger
 
 	// The map of Commands in the CommandManager.
-	Commands []*Command
+	Commands *[]*Command
 
 	// If the CommandManager ignores bots or not.
 	IgnoreBots bool

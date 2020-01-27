@@ -92,8 +92,8 @@ func HelpCommand(ctx CommandContext, args []string) error {
 	}
 	m := ctx.Manager.Commands
 
-	keys := make([]string, 0, len(m))
-	for _, k := range m {
+	keys := make([]string, 0, len(*m))
+	for _, k := range *m {
 		n := k.Name
 		keys = append(keys, n)
 	}
@@ -109,10 +109,10 @@ func HelpCommand(ctx CommandContext, args []string) error {
 
 	var footer strings.Builder
 
-	if len(ctx.Manager.Commands) == 1 {
+	if len(*m) == 1 {
 		footer.WriteString("There is 1 command.")
 	} else {
-		footer.WriteString(fmt.Sprintf("There are %d commands.", len(ctx.Manager.Commands)))
+		footer.WriteString(fmt.Sprintf("There are %d commands.", len(*m)))
 	}
 
 	embed := &discordgo.MessageEmbed{
