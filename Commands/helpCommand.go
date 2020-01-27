@@ -21,7 +21,6 @@ package Commands
 import (
 	"fmt"
 	"github.com/GreatGodApollo/Vi/Shared"
-	"github.com/bwmarrin/discordgo"
 	"sort"
 	"strings"
 )
@@ -79,13 +78,33 @@ func HelpCommand(ctx CommandContext, args []string) error {
 				}
 			}
 
+			var alList string
+			for i, a := range command.Aliases {
+				if i == len(command.Aliases)-1 {
+					alList += fmt.Sprintf("%s", a)
+				} else {
+					alList += fmt.Sprintf("%s ", a)
+				}
+			}
+			if alList == "" {
+				alList = "No Aliases"
+			}
+
 			e := Shared.NewEmbed().
-				SetTitle(fmt.Sprintf("Help for `%s`!", args[0])).
+				SetTitle(fmt.Sprintf("Help for `%s`!", command.Name)).
 				SetColor(Shared.COLOR).
 				SetDescription(command.Description).
 				AddInlineField("Owner Only?", ownerOnlyString).
-				AddInlineField("Usage?", typeString)
+				AddInlineField("Usage?", typeString).
+				AddField("Aliases", alList)
 
+			_, err := ctx.ReplyEmbed(e.MessageEmbed)
+			return err
+		} else {
+			e := Shared.NewEmbed().
+				SetTitle("Command does not exist.").
+				SetColor(0xFF0000).
+				SetDescription(fmt.Sprintf("Please use `%shelp` for a list of commands.", ctx.Manager.Prefixes[0]))
 			_, err := ctx.ReplyEmbed(e.MessageEmbed)
 			return err
 		}
@@ -115,15 +134,12 @@ func HelpCommand(ctx CommandContext, args []string) error {
 		footer.WriteString(fmt.Sprintf("There are %d commands.", len(*m)))
 	}
 
-	embed := &discordgo.MessageEmbed{
-		Title:       "Commands:",
-		Description: list,
-		Color:       Shared.COLOR,
-		Footer: &discordgo.MessageEmbedFooter{
-			Text: footer.String(),
-		},
-	}
+	embed := Shared.NewEmbed().
+		SetTitle("Commands:").
+		SetDescription(list).
+		SetColor(Shared.COLOR).
+		SetFooter(footer.String())
 
-	_, err := ctx.ReplyEmbed(embed)
+	_, err := ctx.ReplyEmbed(embed.MessageEmbed)
 	return err
 }

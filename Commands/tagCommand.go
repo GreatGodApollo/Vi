@@ -35,6 +35,7 @@ var (
 func NewTagCommand() *Command {
 	return &Command{
 		Name:            "tag",
+		Aliases:         []string{"t"},
 		Description:     "Get a tag",
 		OwnerOnly:       false,
 		Hidden:          false,
