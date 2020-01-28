@@ -32,6 +32,9 @@ type Configuration struct {
 		Statuses       []string `json:"statuses"`
 		StatusInterval string   `json:"statusInterval"`
 	} `json:"bot"`
+	Database struct {
+		Connection string `json:"connection"`
+	} `json:"db"`
 	Miscellaneous struct {
 		ColorEnabled      bool   `json:"colorEnabled"`
 		SuggestionChannel string `json:"suggestions"`

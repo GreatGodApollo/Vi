@@ -19,6 +19,8 @@
 package Commands
 
 import (
+	"fmt"
+	"github.com/GreatGodApollo/Vi/Database"
 	"github.com/GreatGodApollo/Vi/Shared"
 	"strings"
 )
@@ -46,12 +48,30 @@ func SuggestCommandFunc(ctx CommandContext, args []string) error {
 		_, err := ctx.Reply(":x: You need to type something actually worth suggesting! :x:")
 		return err
 	}
+	s := strings.Join(args, " ")
+	if len(s) > 512 {
+		_, err := ctx.Reply(":x: Your suggestion needs to be less than 512 characters! :x:")
+		return err
+	}
 	embedBuilder := Shared.NewEmbed()
 	embedBuilder.SetColor(Shared.COLOR)
 	embedBuilder.SetAuthor("Suggestion from: "+ctx.User.Username+"#"+ctx.User.Discriminator, ctx.User.AvatarURL("1024"))
-	embedBuilder.SetDescription(strings.Join(args, " "))
-	_, err := ctx.Session.ChannelMessageSendEmbed(ctx.Manager.Config.Miscellaneous.SuggestionChannel, embedBuilder.MessageEmbed)
-
+	embedBuilder.SetDescription(s)
+	embedBuilder.AddInlineField("Status", "Pending")
+	m, err := ctx.Session.ChannelMessageSendEmbed(ctx.Manager.Config.Miscellaneous.SuggestionChannel, embedBuilder.MessageEmbed)
+	if err != nil {
+		return err
+	}
+	suggestion := &Database.Suggestion{
+		MessageId:  m.ID,
+		ChannelId:  m.ChannelID,
+		Suggestion: s,
+		Status:     Database.SuggestionStatusPending,
+		Message:    "",
+	}
+	ctx.Manager.DB.Create(suggestion)
+	embedBuilder.SetFooter(fmt.Sprintf("Suggestion ID: %v", suggestion.ID))
+	_, err = ctx.Session.ChannelMessageEditEmbed(suggestion.ChannelId, suggestion.MessageId, embedBuilder.MessageEmbed)
 	if err != nil {
 		return err
 	}

@@ -18,7 +18,11 @@
 
 package Commands
 
-import "github.com/GreatGodApollo/Vi/Shared"
+import (
+	"github.com/GreatGodApollo/Vi/Database"
+	"github.com/GreatGodApollo/Vi/Shared"
+	"strconv"
+)
 
 var OwnerCommand = &Command{
 	Name:            "owner",
@@ -43,6 +47,98 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 				LoadTags("tags.json", ctx.Manager.Logger)
 				_, err := ctx.Reply("Tags reloaded!")
 				return err
+			}
+		case "updateSuggestion", "us":
+			{
+				switch args[1] {
+				case "status", "s":
+					{
+						id, err := strconv.Atoi(args[2])
+						if err != nil {
+							ctx.Reply("Invalid suggestion ID")
+						}
+						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
+						var status Database.SuggestionStatus
+						var statuss string
+						var color int
+						switch args[3] {
+						case "pending", "p":
+							{
+								status = Database.SuggestionStatusPending
+								statuss = "Pending"
+								color = Shared.COLOR
+							}
+						case "accepted", "a":
+							{
+								status = Database.SuggestionStatusAccepted
+								statuss = "Accepted"
+								color = 0x00FF00
+							}
+						case "denied", "d":
+							{
+								status = Database.SuggestionStatusDenied
+								statuss = "Denied"
+								color = 0xFF0000
+							}
+						default:
+							{
+								_, err := ctx.Reply("Invalid status code")
+								if err != nil {
+									return err
+								}
+							}
+						}
+						ctx.Manager.DB.Model(&sm).Update("Status", status)
+						var suggestion Database.Suggestion
+						sm.Find(&suggestion)
+						msg, err := ctx.Session.ChannelMessage(suggestion.ChannelId, suggestion.MessageId)
+						if err != nil {
+							return err
+						}
+
+						embedBuilder := Shared.NewEmbed().
+							SetTitle(msg.Embeds[0].Title).
+							SetAuthor(msg.Embeds[0].Author.Name, msg.Embeds[0].Author.IconURL).
+							SetColor(color).
+							SetDescription(msg.Embeds[0].Description).
+							AddInlineField("Status", statuss).
+							SetFooter(msg.Embeds[0].Footer.Text)
+
+						_, err = ctx.Session.ChannelMessageEditEmbed(suggestion.ChannelId, suggestion.MessageId, embedBuilder.MessageEmbed)
+						if err != nil {
+							return err
+						}
+						_, err = ctx.Reply("Status updated!")
+						if err != nil {
+							return err
+						}
+						return nil
+					}
+				case "delete", "d":
+					{
+						id, err := strconv.Atoi(args[2])
+						if err != nil {
+							ctx.Reply("Invalid suggestion ID")
+						}
+						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
+						var suggestion Database.Suggestion
+						sm.Find(&suggestion)
+
+						if (suggestion != Database.Suggestion{}) {
+							err = ctx.Session.ChannelMessageDelete(suggestion.ChannelId, suggestion.MessageId)
+							if err != nil {
+								return err
+							}
+
+							ctx.Manager.DB.Where("id=?", id).Delete(&Database.Suggestion{})
+							_, err = ctx.Reply("Suggestion deleted!")
+							return err
+						} else {
+							_, err = ctx.Reply("Invalid suggestion ID")
+							return err
+						}
+					}
+				}
 			}
 		}
 	}

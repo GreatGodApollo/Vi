@@ -23,9 +23,12 @@ import (
 	"fmt"
 	"github.com/GreatGodApollo/Vi/Commands"
 	"github.com/GreatGodApollo/Vi/Configuration"
+	"github.com/GreatGodApollo/Vi/Database"
 	"github.com/GreatGodApollo/Vi/Shared"
 	"github.com/GreatGodApollo/Vi/Status"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/sirupsen/logrus"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 	"os"
@@ -38,7 +41,6 @@ var Config Configuration.Configuration
 var log = logrus.New()
 
 func main() {
-
 	// Load in configuration file
 	Config = Configuration.LoadConfiguration("config.json", log)
 
@@ -64,13 +66,22 @@ func main() {
 	// Create discordgo client
 	client, err := discordgo.New("Bot " + Config.Bot.Token)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err.Error())
 		return
 	}
 
+	// Create a DB connection
+	db, err := gorm.Open("mysql", Config.Database.Connection+"?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	defer db.Close()
+
+	db.AutoMigrate(&Database.Suggestion{})
+
 	// Create the CommandManager
 	sm := Status.NewStatusManager(Config, log)
-	cmdm := Commands.NewCommandManager(Config, sm, log, true, CommandErrorFunc)
+	cmdm := Commands.NewCommandManager(Config, db, sm, log, true, CommandErrorFunc)
 
 	// Register the commands
 	registerCommands(cmdm)
@@ -105,8 +116,16 @@ func main() {
 	_ = client.Close()
 }
 
-func CommandErrorFunc(cmdm *Commands.CommandManager, err error) {
-	cmdm.Logger.Error(err)
+func CommandErrorFunc(cmdm *Commands.CommandManager, ctx Commands.CommandContext, err error) {
+	if (ctx != Commands.CommandContext{}) {
+		_, err2 := ctx.Reply(":x: Error: `" + err.Error() + "` :x:")
+		if err2 != nil {
+			cmdm.Logger.Error(err2.Error())
+		}
+	} else {
+		cmdm.Logger.Error(err.Error())
+	}
+	return
 }
 
 func registerCommands(cmdm Commands.CommandManager) {

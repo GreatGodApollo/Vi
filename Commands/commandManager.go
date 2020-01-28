@@ -25,6 +25,7 @@ import (
 	"github.com/GreatGodApollo/Vi/Shared"
 	"github.com/GreatGodApollo/Vi/Status"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
 	"strings"
 )
@@ -82,7 +83,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 				}
 			}
 			if err != nil {
-				cmdm.OnErrorFunc(cmdm, err)
+				cmdm.OnErrorFunc(cmdm, CommandContext{}, err)
 			}
 			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
@@ -107,7 +108,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if err != nil {
-				cmdm.OnErrorFunc(cmdm, err)
+				cmdm.OnErrorFunc(cmdm, CommandContext{}, err)
 			}
 			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
@@ -125,7 +126,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if err != nil {
-				cmdm.OnErrorFunc(cmdm, err)
+				cmdm.OnErrorFunc(cmdm, CommandContext{}, err)
 			}
 			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
@@ -141,7 +142,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if err != nil {
-				cmdm.OnErrorFunc(cmdm, err)
+				cmdm.OnErrorFunc(cmdm, CommandContext{}, err)
 			}
 			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
@@ -159,7 +160,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 			}
 
 			if err != nil {
-				cmdm.OnErrorFunc(cmdm, err)
+				cmdm.OnErrorFunc(cmdm, CommandContext{}, err)
 			}
 			cmdm.Logger.Debugf("P: FALSE C: %s[%s] U: %s#%s[%s] M: %s", channel.Name, m.ChannelID, m.Author.Username, m.Author.Discriminator, m.Author.ID, m.Content)
 			return
@@ -183,7 +184,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 
 		err = command.Run(ctx, cmd[1:])
 		if err != nil {
-			cmdm.OnErrorFunc(cmdm, err)
+			cmdm.OnErrorFunc(cmdm, ctx, err)
 		}
 	}
 }
@@ -273,9 +274,10 @@ func (cmdm *CommandManager) IsOwner(id string) bool {
 
 // NewCommandManager instantiates a new CommandManager.
 // It returns a CommandManager.
-func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool, errorFunc CommandManagerOnErrorFunc) CommandManager {
+func NewCommandManager(c Configuration.Configuration, db *gorm.DB, sm *Status.StatusManager, l *logrus.Logger, ignoreBots bool, errorFunc CommandManagerOnErrorFunc) CommandManager {
 	return CommandManager{
 		Config:        c,
+		DB:            db,
 		Prefixes:      c.Bot.Prefixes,
 		Owners:        c.Bot.Owners,
 		StatusManager: sm,
@@ -290,6 +292,9 @@ func NewCommandManager(c Configuration.Configuration, sm *Status.StatusManager, 
 type CommandManager struct {
 	// The bot configuration
 	Config Configuration.Configuration
+
+	// The bot database
+	DB *gorm.DB
 
 	// The array of prefixes a CommandManager will respond to.
 	Prefixes []string
@@ -314,7 +319,7 @@ type CommandManager struct {
 }
 
 // A CommandManagerOnErrorFunc is a function that will run whenever the CommandManager encounters an error.
-type CommandManagerOnErrorFunc func(cmdm *CommandManager, err error)
+type CommandManagerOnErrorFunc func(cmdm *CommandManager, ctx CommandContext, err error)
 
 func RemoveCommandFromSlice(s []*Command, i int) []*Command {
 	s[len(s)-1], s[i] = s[i], s[len(s)-1]

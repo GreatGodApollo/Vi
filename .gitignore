@@ -8,3 +8,6 @@ tags.json
 # Built Executable
 Vi.exe
 Vi
+
+# Custom build script
+build.bat

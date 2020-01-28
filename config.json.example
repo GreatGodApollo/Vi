@@ -12,6 +12,9 @@
         ],
         "statusInterval": ""
     },
+    "database": {
+        "connection": "username:password@(localhost)/dbname"
+    }
     "miscellaneous": {
         "colorEnabled": true,
         "suggestions":  "channel id"
