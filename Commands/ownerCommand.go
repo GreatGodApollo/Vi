@@ -58,7 +58,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							ctx.Reply("Invalid suggestion ID")
 						}
 						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
-						var status Database.SuggestionStatus
+						var status int
 						var statuss string
 						var color int
 						switch args[3] {
@@ -88,9 +88,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 								}
 							}
 						}
-						ctx.Manager.DB.Model(&sm).Update("Status", status)
 						var suggestion Database.Suggestion
 						sm.Find(&suggestion)
+						suggestion.Status = status
+						sm.Save(suggestion)
 						msg, err := ctx.Session.ChannelMessage(suggestion.ChannelId, suggestion.MessageId)
 						if err != nil {
 							return err

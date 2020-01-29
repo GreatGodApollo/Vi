@@ -22,8 +22,7 @@ type Permission int
 
 const (
 	COLOR   int    = 0x532c60
-	VERSION string = "v0.13.0"
-	BOTTAG  string = "<:bot:671061944358142007>"
+	VERSION string = "v0.14.0"
 
 	PermissionAdministrator       Permission = 8
 	PermissionViewAuditLog        Permission = 128

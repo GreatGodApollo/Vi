@@ -55,3 +55,10 @@ func CheckPermissions(s *discordgo.Session, guildid, memberid string, required P
 
 	return false
 }
+
+func EditMessageText(s *discordgo.Session, m *discordgo.Message, newContent string) (discordgo.Message, error) {
+	e := discordgo.NewMessageEdit(m.ChannelID, m.ID)
+	e.SetContent(newContent)
+	me, err := s.ChannelMessageEditComplex(e)
+	return *me, err
+}

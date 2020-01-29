@@ -53,28 +53,27 @@ func SuggestCommandFunc(ctx CommandContext, args []string) error {
 		_, err := ctx.Reply(":x: Your suggestion needs to be less than 512 characters! :x:")
 		return err
 	}
-	embedBuilder := Shared.NewEmbed()
-	embedBuilder.SetColor(Shared.COLOR)
-	embedBuilder.SetAuthor("Suggestion from: "+ctx.User.Username+"#"+ctx.User.Discriminator, ctx.User.AvatarURL("1024"))
-	embedBuilder.SetDescription(s)
-	embedBuilder.AddInlineField("Status", "Pending")
-	m, err := ctx.Session.ChannelMessageSendEmbed(ctx.Manager.Config.Miscellaneous.SuggestionChannel, embedBuilder.MessageEmbed)
-	if err != nil {
-		return err
-	}
 	suggestion := &Database.Suggestion{
-		MessageId:  m.ID,
-		ChannelId:  m.ChannelID,
+		MessageId:  "",
+		ChannelId:  "",
 		Suggestion: s,
 		Status:     Database.SuggestionStatusPending,
 		Message:    "",
 	}
 	ctx.Manager.DB.Create(suggestion)
+	embedBuilder := Shared.NewEmbed()
+	embedBuilder.SetColor(Shared.COLOR)
+	embedBuilder.SetAuthor("Suggestion from: "+ctx.User.Username+"#"+ctx.User.Discriminator, ctx.User.AvatarURL("1024"))
+	embedBuilder.SetDescription(s)
+	embedBuilder.AddInlineField("Status", "Pending")
 	embedBuilder.SetFooter(fmt.Sprintf("Suggestion ID: %v", suggestion.ID))
-	_, err = ctx.Session.ChannelMessageEditEmbed(suggestion.ChannelId, suggestion.MessageId, embedBuilder.MessageEmbed)
+	m, err := ctx.Session.ChannelMessageSendEmbed(ctx.Manager.Config.Miscellaneous.SuggestionChannel, embedBuilder.MessageEmbed)
 	if err != nil {
 		return err
 	}
+	suggestion.ChannelId = m.ChannelID
+	suggestion.MessageId = m.ID
+	ctx.Manager.DB.Save(suggestion)
 	_, err = ctx.Reply(":white_check_mark: Suggestion sent!")
 	return err
 }

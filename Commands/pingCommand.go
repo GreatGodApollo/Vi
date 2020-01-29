@@ -18,7 +18,10 @@
 
 package Commands
 
-import "github.com/GreatGodApollo/Vi/Shared"
+import (
+	"github.com/GreatGodApollo/Vi/Shared"
+	"time"
+)
 
 var PingCommand = &Command{
 	Name:            "ping",
@@ -35,6 +38,11 @@ var PingCommand = &Command{
 // It supplies the user a message if the bot is alive.
 // It returns an error if any occurred.
 func PingCommandFunc(ctx CommandContext, args []string) error {
-	_, err := ctx.Reply("Pong!")
+	initTime := time.Now()
+	m, err := ctx.Reply("Pinging...")
+	if err != nil {
+		return err
+	}
+	_, err = Shared.EditMessageText(ctx.Session, m, "Pong! Took: "+time.Since(initTime).String())
 	return err
 }

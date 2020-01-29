@@ -22,10 +22,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type SuggestionStatus int
-
 const (
-	SuggestionStatusPending SuggestionStatus = iota
+	SuggestionStatusPending int = iota
 	SuggestionStatusAccepted
 	SuggestionStatusDenied
 )
@@ -35,6 +33,6 @@ type Suggestion struct {
 	MessageId  string
 	ChannelId  string
 	Suggestion string `gorm:"size:512"`
-	Status     SuggestionStatus
+	Status     int
 	Message    string `gorm:"size:512"`
 }
