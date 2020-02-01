@@ -74,10 +74,13 @@ func main() {
 	db, err := gorm.Open("mysql", Config.Database.Connection+"?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		log.Fatal(err.Error())
+		return
 	}
 	defer db.Close()
 
 	db.AutoMigrate(&Database.Suggestion{})
+	log.Info("Connected to DB")
+
 
 	// Create the CommandManager
 	sm := Status.NewStatusManager(Config, log)
