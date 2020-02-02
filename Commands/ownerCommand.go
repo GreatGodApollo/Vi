@@ -127,7 +127,8 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 					{
 						id, err := strconv.Atoi(args[2])
 						if err != nil {
-							ctx.Reply("Invalid suggestion ID")
+							_, err = ctx.Reply("Invalid suggestion ID")
+							return err
 						}
 						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
 						var suggestion Database.Suggestion
