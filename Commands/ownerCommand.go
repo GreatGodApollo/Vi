@@ -41,7 +41,7 @@ var OwnerCommand = &Command{
 // It contains all of the owner commands
 // It returns an error if any occurred.
 //
-// Usage: {prefix}owner {reloadtags|updateSuggestion}
+// Usage: {prefix}owner {reloadtags|updateSuggestion} [arguments]
 func OwnerCommandFunc(ctx CommandContext, args []string) error {
 	if len(args) > 0 {
 		switch args[0] {
@@ -87,9 +87,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 						default:
 							{
 								_, err := ctx.Reply("Invalid status code")
-								if err != nil {
-									return err
-								}
+								return err
 							}
 						}
 						var suggestion Database.Suggestion
