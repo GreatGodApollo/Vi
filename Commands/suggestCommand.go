@@ -69,7 +69,7 @@ func SuggestCommandFunc(ctx CommandContext, args []string) error {
 	embedBuilder.SetDescription(s)
 	embedBuilder.AddInlineField("Status", "Pending")
 	embedBuilder.AddInlineField("Message", "nil")
-	embedBuilder.SetFooter(fmt.Sprintf("Suggestion ID: %v", suggestion.ID))
+	embedBuilder.SetFooter(fmt.Sprintf("Suggestion ID: %v | User ID: %v", suggestion.ID, ctx.User.ID))
 	m, err := ctx.Session.ChannelMessageSendEmbed(ctx.Manager.Config.Miscellaneous.SuggestionChannel, embedBuilder.MessageEmbed)
 	if err != nil {
 		return err
