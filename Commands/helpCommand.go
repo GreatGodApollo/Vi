@@ -25,8 +25,6 @@ import (
 	"strings"
 )
 
-// NewHelpCommand returns a new HelpCommandFunc for use in a CommandManager.
-// It returns a Command struct.
 var HelpCommand = &Command{
 	Name:            "help",
 	Aliases:         []string{"h", "halp"},
