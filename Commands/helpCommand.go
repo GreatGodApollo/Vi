@@ -124,19 +124,19 @@ func HelpCommandFunc(ctx CommandContext, args []string) error {
 		}
 	}
 
-	var footer strings.Builder
+	var footer string
 
 	if len(*m) == 1 {
-		footer.WriteString("There is 1 command.")
+		footer = "There is 1 command."
 	} else {
-		footer.WriteString(fmt.Sprintf("There are %d commands.", len(*m)))
+		footer = fmt.Sprintf("There are %d commands.", len(*m))
 	}
 
 	embed := Shared.NewEmbed().
 		SetTitle("Commands:").
 		SetDescription(list).
 		SetColor(Shared.COLOR).
-		SetFooter(footer.String())
+		SetFooter(footer)
 
 	_, err := ctx.ReplyEmbed(embed.MessageEmbed)
 	return err

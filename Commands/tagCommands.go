@@ -20,10 +20,12 @@ package Commands
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/GreatGodApollo/Vi/Shared"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+	"sort"
 )
 
 var (
@@ -42,6 +44,18 @@ var TagCommand = &Command{
 	Run:             TagCommandFunc,
 }
 
+var TagsCommand = &Command{
+	Name:            "tags",
+	Aliases:         []string{"ts"},
+	Description:     "Get a list of tags",
+	OwnerOnly:       false,
+	Hidden:          false,
+	UserPermissions: 0,
+	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
+	Type:            CommandTypeEverywhere,
+	Run:             TagsCommandFunc,
+}
+
 // TagCommandFunc is a CommandRunFunc.
 // It supplies the user with the tag description if the tag supplied exists.
 // It returns an error if any occurred.
@@ -58,6 +72,33 @@ func TagCommandFunc(ctx CommandContext, args []string) error {
 		ctx.Reply(":x: Please supply a tag :x:")
 		return nil
 	}
+}
+
+// TagsCommandFunc is a CommandRunFunc.
+// It supplies the user with a list of the initialized tags.
+// It returns an error if any occurred.
+func TagsCommandFunc(ctx CommandContext, _ []string) error {
+	if len(tags) > 0 {
+		keys := make([]string, 0, len(tags))
+		for _, k := range tags {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		var list string
+		for _, k := range tags {
+			list += fmt.Sprintf("**`%s`**\n", k)
+		}
+		embed := Shared.NewEmbed().
+			SetTitle("Tags:").
+			SetDescription(list).
+			SetColor(Shared.COLOR)
+
+		_, err := ctx.ReplyEmbed(embed.MessageEmbed)
+		return err
+	}
+
+	_, err := ctx.Reply(":x: No tags are initialized :x:")
+	return err
 }
 
 // LoadTags loads the tags from a given file.

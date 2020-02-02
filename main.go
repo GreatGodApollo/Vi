@@ -81,7 +81,6 @@ func main() {
 	db.AutoMigrate(&Database.Suggestion{})
 	log.Info("Connected to DB")
 
-
 	// Create the CommandManager
 	sm := Status.NewStatusManager(Config, log)
 	cmdm := Commands.NewCommandManager(Config, db, sm, log, true, CommandErrorFunc)
@@ -139,5 +138,6 @@ func registerCommands(cmdm Commands.CommandManager) {
 	cmdm.AddCommand(Commands.PingCommand)
 	cmdm.AddCommand(Commands.SuggestCommand)
 	cmdm.AddCommand(Commands.TagCommand)
+	cmdm.AddCommand(Commands.TagsCommand)
 	cmdm.AddCommand(Commands.UserInfoCommand)
 }
