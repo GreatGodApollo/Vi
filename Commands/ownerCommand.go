@@ -38,7 +38,7 @@ var OwnerCommand = &Command{
 }
 
 // OwnerCommandFunc is a CommandRunFunc.
-// It currently has no use.
+// It contains all of the owner commands
 // It returns an error if any occurred.
 //
 // Usage: {prefix}owner {reloadtags|updateSuggestion}
