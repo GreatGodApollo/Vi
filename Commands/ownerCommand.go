@@ -22,6 +22,7 @@ import (
 	"github.com/GreatGodApollo/Vi/Database"
 	"github.com/GreatGodApollo/Vi/Shared"
 	"strconv"
+	"strings"
 )
 
 var OwnerCommand = &Command{
@@ -55,7 +56,8 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 					{
 						id, err := strconv.Atoi(args[2])
 						if err != nil {
-							ctx.Reply("Invalid suggestion ID")
+							_, err = ctx.Reply("Invalid suggestion ID")
+							return err
 						}
 						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
 						var status int
@@ -105,6 +107,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							AddInlineField("Status", statuss).
 							SetFooter(msg.Embeds[0].Footer.Text)
 
+						if msg.Embeds[0].Fields[1] != nil {
+							embedBuilder.AddInlineField("Message", msg.Embeds[0].Fields[1].Value)
+						}
+
 						_, err = ctx.Session.ChannelMessageEditEmbed(suggestion.ChannelId, suggestion.MessageId, embedBuilder.MessageEmbed)
 						if err != nil {
 							return err
@@ -138,6 +144,44 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							_, err = ctx.Reply("Invalid suggestion ID")
 							return err
 						}
+					}
+				case "message", "m":
+					{
+						id, err := strconv.Atoi(args[2])
+						if err != nil {
+							_, err = ctx.Reply("Invalid suggestion ID")
+							return err
+						}
+						msgs := strings.Join(args[3:], " ")
+						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
+						var suggestion Database.Suggestion
+						sm.Find(&suggestion)
+						suggestion.Message = msgs
+						sm.Save(&suggestion)
+
+						msg, err := ctx.Session.ChannelMessage(suggestion.ChannelId, suggestion.MessageId)
+						if err != nil {
+							return err
+						}
+
+						embedBuilder := Shared.NewEmbed().
+							SetTitle(msg.Embeds[0].Title).
+							SetAuthor(msg.Embeds[0].Author.Name, msg.Embeds[0].Author.IconURL).
+							SetColor(msg.Embeds[0].Color).
+							SetDescription(msg.Embeds[0].Description).
+							AddInlineField("Status", msg.Embeds[0].Fields[0].Value).
+							AddInlineField("Message", msgs).
+							SetFooter(msg.Embeds[0].Footer.Text)
+
+						_, err = ctx.Session.ChannelMessageEditEmbed(suggestion.ChannelId, suggestion.MessageId, embedBuilder.MessageEmbed)
+						if err != nil {
+							return err
+						}
+						_, err = ctx.Reply("Message updated!")
+						if err != nil {
+							return err
+						}
+						return nil
 					}
 				}
 			}
