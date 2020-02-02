@@ -25,7 +25,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
-	"sort"
 )
 
 var (
@@ -79,13 +78,8 @@ func TagCommandFunc(ctx CommandContext, args []string) error {
 // It returns an error if any occurred.
 func TagsCommandFunc(ctx CommandContext, _ []string) error {
 	if len(tags) > 0 {
-		keys := make([]string, 0, len(tags))
-		for _, k := range tags {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
 		var list string
-		for _, k := range tags {
+		for k, _ := range tags {
 			list += fmt.Sprintf("**`%s`**\n", k)
 		}
 		embed := Shared.NewEmbed().

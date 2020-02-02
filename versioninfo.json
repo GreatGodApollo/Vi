@@ -3,13 +3,13 @@
     "FileVersion": {
       "Major": 0,
       "Minor": 15,
-      "Patch": 0,
+      "Patch": 1,
       "Build": 0
     },
     "ProductVersion": {
       "Major": 0,
       "Minor": 15,
-      "Patch": 0,
+      "Patch": 1,
       "Build": 0
     },
     "FileFlagsMask": "3f",
@@ -22,14 +22,14 @@
     "Comments": "",
     "CompanyName": "Brett Bender",
     "FileDescription": "Vi: Discord Bot",
-    "FileVersion": "v0.15.0.0",
+    "FileVersion": "v0.15.1.0",
     "InternalName": "Vi",
     "LegalCopyright": "",
     "LegalTrademarks": "",
     "OriginalFilename": "Vi.exe",
     "PrivateBuild": "",
     "ProductName": "Vi",
-    "ProductVersion": "v0.15.0.0",
+    "ProductVersion": "v0.15.1.0",
     "SpecialBuild": ""
   },
   "VarFileInfo": {
