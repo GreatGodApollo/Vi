@@ -44,6 +44,8 @@ var UserInfoCommand = &Command{
 // UserInfoCommand is a CommandRunFunc.
 // It supplies the user information about another user.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}userinfo [user]
 func UserInfoCommandFunc(ctx CommandContext, args []string) error {
 	user, member := parseArgs(ctx, args)
 	primTs, _ := discordgo.SnowflakeTimestamp(user.ID)

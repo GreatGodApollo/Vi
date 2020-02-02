@@ -40,6 +40,8 @@ var HelpCommand = &Command{
 // HelpCommandFunc is a CommandRunFunc.
 // It supplies the user a list of commands in the CommandManager it is assigned to.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}help [command]
 func HelpCommandFunc(ctx CommandContext, args []string) error {
 
 	if len(args) > 0 {

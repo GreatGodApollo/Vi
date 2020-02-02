@@ -36,6 +36,8 @@ var AboutCommand = &Command{
 // AboutCommandFunc is a CommandRunFunc.
 // It supplies the user who runs it information about the bot.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}about
 func AboutCommandFunc(ctx CommandContext, args []string) error {
 	e := Shared.NewEmbed().
 		SetTitle("About Vi").

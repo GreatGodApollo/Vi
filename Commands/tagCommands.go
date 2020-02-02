@@ -58,6 +58,8 @@ var TagsCommand = &Command{
 // TagCommandFunc is a CommandRunFunc.
 // It supplies the user with the tag description if the tag supplied exists.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}tag <tag>
 func TagCommandFunc(ctx CommandContext, args []string) error {
 	if len(args) > 0 {
 		var err error
@@ -76,6 +78,8 @@ func TagCommandFunc(ctx CommandContext, args []string) error {
 // TagsCommandFunc is a CommandRunFunc.
 // It supplies the user with a list of the initialized tags.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}tags
 func TagsCommandFunc(ctx CommandContext, _ []string) error {
 	if len(tags) > 0 {
 		var list string

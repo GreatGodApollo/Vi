@@ -37,6 +37,8 @@ var PingCommand = &Command{
 // PingCommandFunc is a CommandRunFunc.
 // It supplies the user a message if the bot is alive.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}ping
 func PingCommandFunc(ctx CommandContext, args []string) error {
 	initTime := time.Now()
 	m, err := ctx.Reply("Pinging...")

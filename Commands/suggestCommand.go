@@ -39,6 +39,8 @@ var SuggestCommand = &Command{
 // SuggestCommandFunc is a CommandRunFunc.
 // It submits a suggestion to the channel specific in the config.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}suggest <suggestion>
 func SuggestCommandFunc(ctx CommandContext, args []string) error {
 	if ctx.Manager.Config.Miscellaneous.SuggestionChannel == "" {
 		_, err := ctx.Reply(":x: Suggesting is not enabled! :x:")

@@ -37,6 +37,8 @@ var InviteCommand = &Command{
 // InviteCommandFunc is a CommandRunFunc.
 // It supplies the user an invite to the bot.
 // It returns an error if any occurred.
+//
+// Usage: {prefix}invite
 func InviteCommandFunc(ctx CommandContext, args []string) error {
 	embed := Shared.NewEmbed().
 		SetTitle("Invite Me!").
