@@ -35,6 +35,9 @@ type CommandContext struct {
 	// The CommandManager that handled this command.
 	Manager *CommandManager
 
+	// The custom args struct for this command
+	Args interface{}
+
 	// The bot's StatusManager.
 	StatusManager *Status.StatusManager
 

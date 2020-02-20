@@ -3,6 +3,7 @@
 
 # Local Config File
 config.json
+config.json.old
 tags.json
 
 # Built Executable

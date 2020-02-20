@@ -22,7 +22,6 @@ import (
 	"fmt"
 	"github.com/GreatGodApollo/Vi/Shared"
 	"sort"
-	"strings"
 )
 
 var HelpCommand = &Command{
@@ -35,6 +34,28 @@ var HelpCommand = &Command{
 	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
 	Type:            CommandTypeEverywhere,
 	Run:             HelpCommandFunc,
+	ProcessArgs:     HelpArgsFunc,
+}
+
+// A HelpCommandArgs is passed into a CommandContext. It provides the necessary information for a help command to run.
+type HelpCommandArgs struct {
+	// The name of the command the user is searching for
+	Command string
+
+	// The rest of the arguments provided
+	Rest []string
+}
+
+// HelpArgsFunc is a CommandArgFunc
+// It returns the proper HelpCommandArgs struct given the args provided
+// It returns an empty struct if no args are provided
+func HelpArgsFunc(args []string) interface{} {
+	if len(args) == 1 {
+		return HelpCommandArgs{Command: args[0], Rest: nil}
+	} else if len(args) > 1 {
+		return HelpCommandArgs{Command: args[0], Rest: args[1:]}
+	}
+	return HelpCommandArgs{}
 }
 
 // HelpCommandFunc is a CommandRunFunc.
@@ -43,9 +64,9 @@ var HelpCommand = &Command{
 //
 // Usage: {prefix}help [command]
 func HelpCommandFunc(ctx CommandContext, args []string) error {
-
+	argStruct := ctx.Args.(HelpCommandArgs)
 	if len(args) > 0 {
-		if command, has, _ := ctx.Manager.GetCommand(strings.ToLower(args[0])); has {
+		if command, has, _ := ctx.Manager.GetCommand(argStruct.Command); has {
 			if command.Hidden {
 				return nil
 			}
