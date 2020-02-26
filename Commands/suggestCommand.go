@@ -43,7 +43,7 @@ type SuggestCommandArgs struct {
 	Suggestion []string
 }
 
-// HelpArgsFunc is a CommandArgFunc
+// SuggestArgsFunc is a CommandArgFunc
 // It returns the proper SuggestCommandArgs struct given the args provided
 // It returns an empty struct if no args are provided
 func SuggestArgsFunc(args []string) interface{} {

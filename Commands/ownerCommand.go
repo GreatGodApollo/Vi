@@ -35,6 +35,28 @@ var OwnerCommand = &Command{
 	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
 	Type:            CommandTypeEverywhere,
 	Run:             OwnerCommandFunc,
+	ProcessArgs:     OwnerArgsFunc,
+}
+
+// A OwnerCommandsArg is passed into a CommandContext. It provides the necessary information for a help command to run.
+type OwnerCommandArgs struct {
+	// The name of the command the user is searching for
+	Option string
+
+	// The rest of the arguments
+	Rest []string
+}
+
+// OwnerArgsFunc is a CommandArgFunc
+// It returns the proper OwnerCommandArgs struct given the args provided
+// It returns an empty struct if no args are provided
+func OwnerArgsFunc(args []string) interface{} {
+	if len(args) == 1 {
+		return OwnerCommandArgs{args[0], nil}
+	} else if len(args) > 1 {
+		return OwnerCommandArgs{args[0], args[1:]}
+	}
+	return OwnerCommandArgs{}
 }
 
 // OwnerCommandFunc is a CommandRunFunc.
@@ -43,8 +65,9 @@ var OwnerCommand = &Command{
 //
 // Usage: {prefix}owner {reloadtags|updateSuggestion} [arguments]
 func OwnerCommandFunc(ctx CommandContext, args []string) error {
-	if len(args) > 0 {
-		switch args[0] {
+	argStruct := ctx.Args.(OwnerCommandArgs)
+	if argStruct.Option != "" {
+		switch argStruct.Option {
 		case "reloadtags":
 			{
 				LoadTags("tags.json", ctx.Manager.Logger)
@@ -53,10 +76,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 			}
 		case "updateSuggestion", "us":
 			{
-				switch args[1] {
+				switch argStruct.Rest[0] {
 				case "status", "s":
 					{
-						id, err := strconv.Atoi(args[2])
+						id, err := strconv.Atoi(argStruct.Rest[1])
 						if err != nil {
 							_, err = ctx.Reply("Invalid suggestion ID")
 							return err
@@ -65,7 +88,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 						var status int
 						var statuss string
 						var color int
-						switch args[3] {
+						switch argStruct.Rest[2] {
 						case "pending", "p":
 							{
 								status = Database.SuggestionStatusPending
@@ -123,7 +146,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 					}
 				case "delete", "d":
 					{
-						id, err := strconv.Atoi(args[2])
+						id, err := strconv.Atoi(argStruct.Rest[1])
 						if err != nil {
 							_, err = ctx.Reply("Invalid suggestion ID")
 							return err
@@ -148,12 +171,12 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 					}
 				case "message", "m":
 					{
-						id, err := strconv.Atoi(args[2])
+						id, err := strconv.Atoi(argStruct.Rest[1])
 						if err != nil {
 							_, err = ctx.Reply("Invalid suggestion ID")
 							return err
 						}
-						msgs := strings.Join(args[3:], " ")
+						msgs := strings.Join(argStruct.Rest[2:], " ")
 						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
 						var suggestion Database.Suggestion
 						sm.Find(&suggestion)
