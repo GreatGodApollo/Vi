@@ -22,6 +22,7 @@ import "github.com/GreatGodApollo/Vi/Shared"
 
 // A CommandFunc is ran whenever a CommandManager gets a message supposed to run the given command.
 type CommandFunc func(CommandContext, []string) error
+type CommandArgFunc func([]string) interface{}
 
 // A Command represents any given command contained in a bot.
 type Command struct {
@@ -51,6 +52,9 @@ type Command struct {
 
 	// The function that will be executed whenever a message fits the criteria to execute the command.
 	Run CommandFunc
+
+	// The function that will be ran to process arguments
+	ProcessArgs CommandArgFunc
 }
 
 // A CommandType represents the locations commands can be used.

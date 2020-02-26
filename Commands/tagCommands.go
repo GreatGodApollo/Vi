@@ -41,6 +41,7 @@ var TagCommand = &Command{
 	BotPermissions:  Shared.PermissionMessagesSend,
 	Type:            CommandTypeEverywhere,
 	Run:             TagCommandFunc,
+	ProcessArgs:     TagArgsFunc,
 }
 
 var TagsCommand = &Command{
@@ -55,23 +56,40 @@ var TagsCommand = &Command{
 	Run:             TagsCommandFunc,
 }
 
+// A TagCommandArgs is passed into a CommandContext. It provides the necessary information for a tag command to run.
+type TagCommandArgs struct {
+	// The name of the tag the user is searching for
+	Tag string
+}
+
+// TagArgsFunc is a CommandArgFunc
+// It returns the proper TagCommandArgs struct given the args provided
+// It returns an empty struct if no args are provided
+func TagArgsFunc(args []string) interface{} {
+	if len(args) == 1 {
+		return TagCommandArgs{args[0]}
+	}
+	return TagCommandArgs{}
+}
+
 // TagCommandFunc is a CommandRunFunc.
 // It supplies the user with the tag description if the tag supplied exists.
 // It returns an error if any occurred.
 //
 // Usage: {prefix}tag <tag>
 func TagCommandFunc(ctx CommandContext, args []string) error {
-	if len(args) > 0 {
+	argStruct := ctx.Args.(TagCommandArgs)
+	if argStruct.Tag != "" {
 		var err error
-		if tag, has := tags[args[0]]; has {
+		if tag, has := tags[argStruct.Tag]; has {
 			_, err = ctx.Reply(tag)
 		} else {
 			_, err = ctx.Reply(":x: Tag does not exist :x:")
 		}
 		return err
 	} else {
-		ctx.Reply(":x: Please supply a tag :x:")
-		return nil
+		_, err := ctx.Reply(":x: Please supply a tag :x:")
+		return err
 	}
 }
 

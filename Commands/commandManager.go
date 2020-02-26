@@ -170,10 +170,18 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 		guild, _ := s.Guild(m.GuildID)
 		member, _ := s.State.Member(m.GuildID, m.Author.ID)
 
+		var args interface{}
+		if command.ProcessArgs != nil {
+			args = command.ProcessArgs(cmd[1:])
+		} else {
+			args = nil
+		}
+
 		ctx := CommandContext{
 			Session:       s,
 			Event:         m,
 			Manager:       cmdm,
+			Args:          args,
 			StatusManager: cmdm.StatusManager,
 			Message:       m.Message,
 			User:          m.Author,
@@ -225,7 +233,7 @@ func (cmdm *CommandManager) AddNewCommand(name string, aliases []string, desc st
 	var cmd *Command
 	if _, exists, _ := cmdm.GetCommand(name); !exists {
 		cmd = &Command{
-			name, aliases, desc, owneronly, hidden, userperms, botperms, cmdType, run,
+			name, aliases, desc, owneronly, hidden, userperms, botperms, cmdType, run, nil,
 		}
 	}
 	*cmdm.Commands = append(*cmdm.Commands, cmd)
