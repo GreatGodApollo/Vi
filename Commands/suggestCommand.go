@@ -37,9 +37,9 @@ var SuggestCommand = &Command{
 	ProcessArgs:     SuggestArgsFunc,
 }
 
-// A SuggestCommandArgs is passed into a CommandContext. It provides the necessary information for a help command to run.
+// A SuggestCommandArgs is passed into a CommandContext. It provides the necessary information for a suggest command to run.
 type SuggestCommandArgs struct {
-	// The name of the command the user is searching for
+	// The suggestion the user is making
 	Suggestion []string
 }
 

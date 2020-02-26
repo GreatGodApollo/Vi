@@ -38,7 +38,7 @@ var OwnerCommand = &Command{
 	ProcessArgs:     OwnerArgsFunc,
 }
 
-// A OwnerCommandsArg is passed into a CommandContext. It provides the necessary information for a help command to run.
+// A OwnerCommandsArg is passed into a CommandContext. It provides the necessary information for an owner command to run.
 type OwnerCommandArgs struct {
 	// The name of the command the user is searching for
 	Option string
@@ -68,7 +68,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 	argStruct := ctx.Args.(OwnerCommandArgs)
 	if argStruct.Option != "" {
 		switch argStruct.Option {
-		case "reloadtags":
+		case "reloadtags", "rt":
 			{
 				LoadTags("tags.json", ctx.Manager.Logger)
 				_, err := ctx.Reply("Tags reloaded!")
