@@ -34,6 +34,23 @@ var SuggestCommand = &Command{
 	BotPermissions:  Shared.PermissionMessagesSend,
 	Type:            CommandTypeEverywhere,
 	Run:             SuggestCommandFunc,
+	ProcessArgs:     SuggestArgsFunc,
+}
+
+// A SuggestCommandArgs is passed into a CommandContext. It provides the necessary information for a help command to run.
+type SuggestCommandArgs struct {
+	// The name of the command the user is searching for
+	Suggestion []string
+}
+
+// HelpArgsFunc is a CommandArgFunc
+// It returns the proper SuggestCommandArgs struct given the args provided
+// It returns an empty struct if no args are provided
+func SuggestArgsFunc(args []string) interface{} {
+	if len(args) > 0 {
+		return SuggestCommandArgs{args}
+	}
+	return SuggestCommandArgs{}
 }
 
 // SuggestCommandFunc is a CommandRunFunc.
@@ -42,15 +59,16 @@ var SuggestCommand = &Command{
 //
 // Usage: {prefix}suggest <suggestion>
 func SuggestCommandFunc(ctx CommandContext, args []string) error {
+	argStruct := ctx.Args.(SuggestCommandArgs)
 	if ctx.Manager.Config.Miscellaneous.SuggestionChannel == "" {
 		_, err := ctx.Reply(":x: Suggesting is not enabled! :x:")
 		return err
 	}
-	if len(args) <= 1 {
+	if len(argStruct.Suggestion) <= 1 {
 		_, err := ctx.Reply(":x: You need to type something actually worth suggesting! :x:")
 		return err
 	}
-	s := strings.Join(args, " ")
+	s := strings.Join(argStruct.Suggestion, " ")
 	if len(s) > 512 {
 		_, err := ctx.Reply(":x: Your suggestion needs to be less than 512 characters! :x:")
 		return err
