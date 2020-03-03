@@ -45,7 +45,7 @@ func InviteCommandFunc(ctx CommandContext, args []string) error {
 		SetColor(Shared.COLOR).
 		SetDescription("Vi is a multi-functional Discord bot written in GoLang using the DiscordGo library."+
 			"This bot was authored by `apollo#9292` and is available at https://l.brettb.xyz/vi").
-		AddField("Invite URL", fmt.Sprintf("https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=379976", ctx.Session.State.User.ID))
+		AddField("Invite URL", fmt.Sprintf("https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=%v", ctx.Session.State.User.ID, Shared.REQUIREDPERMISSIONS))
 	_, err := ctx.ReplyEmbed(embed.MessageEmbed)
 	return err
 }

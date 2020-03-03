@@ -22,7 +22,11 @@ type Permission int
 
 const (
 	COLOR   int    = 0x532c60
-	VERSION string = "v0.18.0"
+	VERSION string = "v0.18.1"
+
+	REQUIREDPERMISSIONS           Permission = PermissionMessagesManage | PermissionMessagesEmbedLinks |
+		PermissionMessagesSend | PermissionMessagesReadHistory | PermissionViewChannels |
+		PermissionMessagesAddReactions | PermissionMessagesAttachFiles | PermissionMessagesUseExternalEmojis
 
 	PermissionAdministrator       Permission = 8
 	PermissionViewAuditLog        Permission = 128
