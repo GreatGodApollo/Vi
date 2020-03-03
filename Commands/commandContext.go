@@ -19,6 +19,7 @@
 package Commands
 
 import (
+	"errors"
 	"github.com/GreatGodApollo/Vi/Status"
 	"github.com/bwmarrin/discordgo"
 	"io"
@@ -70,4 +71,24 @@ func (ctx *CommandContext) ReplyEmbed(embed *discordgo.MessageEmbed) (*discordgo
 // ReplyFile sends a file to the channel a CommandContext was initiated for.
 func (ctx *CommandContext) ReplyFile(filename string, file io.Reader) (*discordgo.Message, error) {
 	return ctx.Session.ChannelFileSend(ctx.Channel.ID, filename, file)
+}
+
+// PurgeMessages purges 'x' number of messages from the Channel a CommandContext was initiated for.
+func (ctx *CommandContext) PurgeMessages(num int) error {
+	if num >= 1 && num <= 100 {
+		msgs, err := ctx.Session.ChannelMessages(ctx.Channel.ID, num, "", "", "")
+		if err != nil {
+			return err
+		}
+		var ids []string
+		for _, msg := range msgs {
+			ids = append(ids, msg.ID)
+		}
+		return ctx.Session.ChannelMessagesBulkDelete(ctx.Channel.ID, ids)
+	} else if num > 1 && num > 100 {
+		return errors.New("too many messages")
+	} else if num == 0 {
+		return errors.New("must supply a number")
+	}
+	return nil
 }
