@@ -37,7 +37,7 @@ var UserInfoCommand = &Command{
 	Hidden:          false,
 	UserPermissions: 0,
 	BotPermissions:  Shared.PermissionMessagesSend | Shared.PermissionMessagesEmbedLinks,
-	Type:            CommandTypeEverywhere,
+	Type:            CommandTypeGuild,
 	Run:             UserInfoCommandFunc,
 }
 
