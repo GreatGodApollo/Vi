@@ -92,7 +92,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							_, err = ctx.Reply("Invalid suggestion ID")
 							return err
 						}
-						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
+
 						var status int
 						var statuss string
 						var color int
@@ -122,9 +122,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							}
 						}
 						var suggestion Database.Suggestion
-						sm.Find(&suggestion)
+						ctx.Manager.DB.Model(Database.Suggestion{}).Where("id=?", id).Scan(&suggestion)
 						suggestion.Status = status
-						sm.Save(suggestion)
+						ctx.Manager.DB.Save(suggestion)
+
 						msg, err := ctx.Session.ChannelMessage(suggestion.ChannelId, suggestion.MessageId)
 						if err != nil {
 							return err
@@ -163,9 +164,8 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							_, err = ctx.Reply("Invalid suggestion ID")
 							return err
 						}
-						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
 						var suggestion Database.Suggestion
-						sm.Find(&suggestion)
+						ctx.Manager.DB.Model(Database.Suggestion{}).Where("id=?", id).Scan(&suggestion)
 
 						if (suggestion != Database.Suggestion{}) {
 							err = ctx.Session.ChannelMessageDelete(suggestion.ChannelId, suggestion.MessageId)
@@ -173,7 +173,7 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 								return err
 							}
 
-							ctx.Manager.DB.Where("id=?", id).Delete(&Database.Suggestion{})
+							ctx.Manager.DB.Where("id=?", id).Delete(Database.Suggestion{})
 							_, err = ctx.Reply("Suggestion deleted!")
 							return err
 						} else {
@@ -193,11 +193,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 							return err
 						}
 						msgs := strings.Join(argStruct.Rest[2:], " ")
-						sm := ctx.Manager.DB.First(&Database.Suggestion{}, id)
 						var suggestion Database.Suggestion
-						sm.Find(&suggestion)
+						ctx.Manager.DB.Model(Database.Suggestion{}).Where("id=?", id).Scan(&suggestion)
 						suggestion.Message = msgs
-						sm.Save(&suggestion)
+						ctx.Manager.DB.Save(&suggestion)
 
 						msg, err := ctx.Session.ChannelMessage(suggestion.ChannelId, suggestion.MessageId)
 						if err != nil {

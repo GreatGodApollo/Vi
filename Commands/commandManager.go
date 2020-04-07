@@ -174,7 +174,7 @@ func (cmdm *CommandManager) CommandHandler(s *discordgo.Session, m *discordgo.Me
 		if command.ProcessArgs != nil {
 			args = command.ProcessArgs(cmd[1:])
 		} else {
-			args = nil
+			args = cmd[1]
 		}
 
 		ctx := CommandContext{
