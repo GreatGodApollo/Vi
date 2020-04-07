@@ -207,6 +207,11 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 						}
 						return nil
 					}
+				default:
+					{
+						_, err := ctx.Reply("Unknown sub command!")
+						return err
+					}
 				}
 			}
 		}
