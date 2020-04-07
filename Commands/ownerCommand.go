@@ -76,9 +76,17 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 			}
 		case "updateSuggestion", "us":
 			{
+				if len(argStruct.Rest) < 1 {
+					_, err := ctx.Reply("You need to supply a sub command")
+					return err
+				}
 				switch argStruct.Rest[0] {
 				case "status", "s":
 					{
+						if len(argStruct.Rest) < 3 {
+							_, err := ctx.Reply("You need to supply a new status!")
+							return err
+						}
 						id, err := strconv.Atoi(argStruct.Rest[1])
 						if err != nil {
 							_, err = ctx.Reply("Invalid suggestion ID")
@@ -146,6 +154,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 					}
 				case "delete", "d":
 					{
+						if len(argStruct.Rest) < 2 {
+							_, err := ctx.Reply("You need to supply a suggestion to delete!")
+							return err
+						}
 						id, err := strconv.Atoi(argStruct.Rest[1])
 						if err != nil {
 							_, err = ctx.Reply("Invalid suggestion ID")
@@ -171,6 +183,10 @@ func OwnerCommandFunc(ctx CommandContext, args []string) error {
 					}
 				case "message", "m":
 					{
+						if len(argStruct.Rest) < 3 {
+							_, err := ctx.Reply("You need to supply a suggestion ID and new message!")
+							return err
+						}
 						id, err := strconv.Atoi(argStruct.Rest[1])
 						if err != nil {
 							_, err = ctx.Reply("Invalid suggestion ID")
